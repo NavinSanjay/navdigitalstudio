@@ -1,17 +1,20 @@
 [
   {
-    "logo": "/logos/brand1.svg",
-    "quote": "The craft and clarity were next-level.",
-    "name": "Founder, Consumer Brand"
+    "quote": "The craft and clarity were next-level. They understood our vision immediately and executed with precision.",
+    "name": "Sarah Chen",
+    "role": "Founder",
+    "company": "The Paddle Collective"
   },
   {
-    "logo": "/logos/brand2.svg",
-    "quote": "They shipped fast and smart\u2014great partner.",
-    "name": "Director, Tech SME"
+    "quote": "They shipped fast and smart—transformed our online presence in weeks, not months. The results speak for themselves.",
+    "name": "Marcus Reid",
+    "role": "Director",
+    "company": "Magnolia & Soul"
   },
   {
-    "logo": "/logos/brand3.svg",
-    "quote": "High-taste, no fluff. It just works.",
-    "name": "COO, DTC"
+    "quote": "High-taste, no fluff. The technical depth matched the design quality. Rare combination in this industry.",
+    "name": "Elena Voss",
+    "role": "COO",
+    "company": "Poket Pro"
   }
 ]
