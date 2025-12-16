@@ -68,7 +68,7 @@ function Schedule() {
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState<string>('')
   const book = async (day: string, time: string) => {
-    setLoading(True)
+    setLoading(true)
   }
   return (
     <div className="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
