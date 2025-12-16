@@ -36,17 +36,11 @@ export default function ClientHome() {
   }, [introDone, scrolled])
 
   return (
-    <main className="
-        h-[100svh]               /* full viewport height incl. mobile URL bar */
-        overflow-y-auto
-        snap-y snap-proximity    /* vertical snap; 'proximity' = semi-snap */
-        scroll-smooth
-      ">
-
+    <main className="min-h-screen bg-black text-white">
       {!introDone && <Start onComplete={() => setIntroDone(true)} />}
 
       <Hero />
-      {/* <ProofStrip items={testimonials as any} /> */}
+      <ProofStrip items={testimonials as any} />
       <ProjectsRail items={projects as any} />
       <Services />
       <Pricing />
