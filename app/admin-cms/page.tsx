@@ -26,7 +26,7 @@ export default function AdminCMSPage() {
 
   const checkAuth = async () => {
     try {
-      const res = await fetch('/api/admin/session')
+      const res = await fetch('/cms-api/session')
       if (res.ok) {
         setAuthenticated(true)
       } else {
@@ -40,9 +40,9 @@ export default function AdminCMSPage() {
   const fetchStats = async () => {
     try {
       const [projects, testimonials, faqs] = await Promise.all([
-        fetch('/api/admin/projects').then(r => r.json()),
-        fetch('/api/admin/testimonials').then(r => r.json()),
-        fetch('/api/admin/faqs').then(r => r.json())
+        fetch('/cms-api/projects').then(r => r.json()),
+        fetch('/cms-api/testimonials').then(r => r.json()),
+        fetch('/cms-api/faqs').then(r => r.json())
       ])
       setStats({
         projects: Array.isArray(projects) ? projects.length : 0,
@@ -60,7 +60,7 @@ export default function AdminCMSPage() {
     setLoading(true)
 
     try {
-      const res = await fetch('/api/admin/login', {
+      const res = await fetch('/cms-api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -84,7 +84,7 @@ export default function AdminCMSPage() {
     if (!confirm('This will replace all existing content with seed data. Continue?')) return
     setSeeding(true)
     try {
-      const res = await fetch('/api/admin/seed', { method: 'POST' })
+      const res = await fetch('/cms-api/seed', { method: 'POST' })
       if (res.ok) {
         const data = await res.json()
         alert(`Seeded: ${data.counts.projects} projects, ${data.counts.testimonials} testimonials, ${data.counts.faqs} FAQs`)

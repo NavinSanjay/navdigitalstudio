@@ -27,7 +27,7 @@ export default function TestimonialsPage() {
 
   const fetchTestimonials = async () => {
     try {
-      const res = await fetch('/api/admin/testimonials')
+      const res = await fetch('/cms-api/testimonials')
       const data = await res.json()
       setTestimonials(Array.isArray(data) ? data : [])
     } catch (e) {
@@ -42,7 +42,7 @@ export default function TestimonialsPage() {
     setSaving(true)
 
     try {
-      const url = isNew ? '/api/admin/testimonials' : `/api/admin/testimonials/${editing._id}`
+      const url = isNew ? '/cms-api/testimonials' : `/cms-api/testimonials/${editing._id}`
       const method = isNew ? 'POST' : 'PUT'
       
       const res = await fetch(url, {
@@ -68,7 +68,7 @@ export default function TestimonialsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this testimonial?')) return
     try {
-      await fetch(`/api/admin/testimonials/${id}`, { method: 'DELETE' })
+      await fetch(`/cms-api/testimonials/${id}`, { method: 'DELETE' })
       setTestimonials(testimonials.filter(t => t._id !== id))
     } catch (e) {
       alert('Failed to delete testimonial')

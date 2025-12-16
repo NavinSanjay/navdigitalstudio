@@ -74,7 +74,7 @@ export default function NewProjectPage() {
         order: formData.order
       }
 
-      const res = await fetch('/api/admin/projects', {
+      const res = await fetch('/cms-api/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

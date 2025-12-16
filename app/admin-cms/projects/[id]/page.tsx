@@ -57,7 +57,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
 
   const fetchProject = async () => {
     try {
-      const res = await fetch(`/api/admin/projects/${id}`)
+      const res = await fetch(`/cms-api/projects/${id}`)
       if (res.ok) {
         const project: Project = await res.json()
         setFormData({
@@ -133,7 +133,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
         order: formData.order
       }
 
-      const res = await fetch(`/api/admin/projects/${id}`, {
+      const res = await fetch(`/cms-api/projects/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -155,7 +155,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
   const handleDelete = async () => {
     if (!confirm('Delete this project? This cannot be undone.')) return
     try {
-      await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' })
+      await fetch(`/cms-api/projects/${id}`, { method: 'DELETE' })
       router.push('/admin-cms/projects')
     } catch (e) {
       alert('Failed to delete project')

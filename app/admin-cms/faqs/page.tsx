@@ -24,7 +24,7 @@ export default function FAQsPage() {
 
   const fetchFaqs = async () => {
     try {
-      const res = await fetch('/api/admin/faqs')
+      const res = await fetch('/cms-api/faqs')
       const data = await res.json()
       setFaqs(Array.isArray(data) ? data : [])
     } catch (e) {
@@ -39,7 +39,7 @@ export default function FAQsPage() {
     setSaving(true)
 
     try {
-      const url = isNew ? '/api/admin/faqs' : `/api/admin/faqs/${editing._id}`
+      const url = isNew ? '/cms-api/faqs' : `/cms-api/faqs/${editing._id}`
       const method = isNew ? 'POST' : 'PUT'
       
       const res = await fetch(url, {
@@ -65,7 +65,7 @@ export default function FAQsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this FAQ?')) return
     try {
-      await fetch(`/api/admin/faqs/${id}`, { method: 'DELETE' })
+      await fetch(`/cms-api/faqs/${id}`, { method: 'DELETE' })
       setFaqs(faqs.filter(f => f._id !== id))
     } catch (e) {
       alert('Failed to delete FAQ')

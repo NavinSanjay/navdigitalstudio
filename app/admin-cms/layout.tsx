@@ -18,7 +18,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const res = await fetch('/api/admin/session')
+      const res = await fetch('/cms-api/session')
       if (res.ok) {
         const data = await res.json()
         setAuthenticated(true)
@@ -32,7 +32,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' })
+    await fetch('/cms-api/logout', { method: 'POST' })
     setAuthenticated(false)
     router.push('/admin-cms')
   }

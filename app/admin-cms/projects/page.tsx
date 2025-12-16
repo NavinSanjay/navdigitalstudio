@@ -25,7 +25,7 @@ export default function ProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch('/api/admin/projects')
+      const res = await fetch('/cms-api/projects')
       const data = await res.json()
       setProjects(Array.isArray(data) ? data : [])
     } catch (e) {
@@ -38,7 +38,7 @@ export default function ProjectsPage() {
   const deleteProject = async (id: string) => {
     if (!confirm('Delete this project? This cannot be undone.')) return
     try {
-      await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' })
+      await fetch(`/cms-api/projects/${id}`, { method: 'DELETE' })
       setProjects(projects.filter(p => p._id !== id))
     } catch (e) {
       alert('Failed to delete project')
