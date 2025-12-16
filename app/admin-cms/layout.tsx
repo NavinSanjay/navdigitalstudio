@@ -50,10 +50,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   const navItems = [
-    { href: '/admin-cms', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin-cms/projects', label: 'Projects', icon: FolderOpen },
-    { href: '/admin-cms/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
-    { href: '/admin-cms/faqs', label: 'FAQs', icon: HelpCircle },
+    { href: '/admin-cms' as const, label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/admin-cms/projects' as const, label: 'Projects', icon: FolderOpen },
+    { href: '/admin-cms/testimonials' as const, label: 'Testimonials', icon: MessageSquareQuote },
+    { href: '/admin-cms/faqs' as const, label: 'FAQs', icon: HelpCircle },
   ]
 
   return (
