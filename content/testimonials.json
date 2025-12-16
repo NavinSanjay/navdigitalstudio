@@ -1,0 +1,17 @@
+[
+  {
+    "logo": "/logos/brand1.svg",
+    "quote": "The craft and clarity were next-level.",
+    "name": "Founder, Consumer Brand"
+  },
+  {
+    "logo": "/logos/brand2.svg",
+    "quote": "They shipped fast and smart\u2014great partner.",
+    "name": "Director, Tech SME"
+  },
+  {
+    "logo": "/logos/brand3.svg",
+    "quote": "High-taste, no fluff. It just works.",
+    "name": "COO, DTC"
+  }
+]

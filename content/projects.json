@@ -1,0 +1,53 @@
+[
+  {
+    "slug": "magnolia-and-soul",
+    "title": "Magnolia & Soul",
+    "year": "2024",
+    "role": "Design \u2022 Build \u2022 E-commerce",
+    "stack": [
+      "Next.js",
+      "Tailwind",
+      "Stripe"
+    ],
+    "problem": "Tea brand needed a high-taste storefront that converts.",
+    "approach": "One-page ritual flow with elegant motion and guided cart.",
+    "outcome": "Up time on page, up conversion; streamlined product narrative.",
+    "media": [
+      "/images/magnolia-cover.jpg"
+    ]
+  },
+  {
+    "slug": "the-paddle-collective",
+    "title": "The Paddle Collective",
+    "year": "2025",
+    "role": "Brand \u2022 Web \u2022 Product",
+    "stack": [
+      "Next.js",
+      "Tailwind",
+      "PWA"
+    ],
+    "problem": "Premium indoor pickleball brand seeking cohesive digital presence.",
+    "approach": "Country-club-meets-industrial motif; crisp UI; on-site booking concept.",
+    "outcome": "Investor-ready deck and strong early traction.",
+    "media": [
+      "/images/tpc-cover.jpg"
+    ]
+  },
+  {
+    "slug": "poket-pro",
+    "title": "Poket Pro",
+    "year": "2024",
+    "role": "Prototype \u2022 UX \u2022 Computer Vision",
+    "stack": [
+      "Next.js",
+      "Python",
+      "OpenCV"
+    ],
+    "problem": "Golfers lacked simple, immediate swing feedback.",
+    "approach": "Camera-first interactions; lightweight video analysis.",
+    "outcome": "Clear path to MVP with validated user flows.",
+    "media": [
+      "/images/poket-cover.jpg"
+    ]
+  }
+]
