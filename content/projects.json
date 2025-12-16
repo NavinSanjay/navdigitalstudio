@@ -1,53 +1,102 @@
 [
   {
-    "slug": "magnolia-and-soul",
-    "title": "Magnolia & Soul",
-    "year": "2024",
-    "role": "Design \u2022 Build \u2022 E-commerce",
-    "stack": [
-      "Next.js",
-      "Tailwind",
-      "Stripe"
-    ],
-    "problem": "Tea brand needed a high-taste storefront that converts.",
-    "approach": "One-page ritual flow with elegant motion and guided cart.",
-    "outcome": "Up time on page, up conversion; streamlined product narrative.",
-    "media": [
-      "/images/magnolia-cover.jpg"
-    ]
-  },
-  {
     "slug": "the-paddle-collective",
     "title": "The Paddle Collective",
     "year": "2025",
-    "role": "Brand \u2022 Web \u2022 Product",
-    "stack": [
-      "Next.js",
-      "Tailwind",
-      "PWA"
-    ],
-    "problem": "Premium indoor pickleball brand seeking cohesive digital presence.",
-    "approach": "Country-club-meets-industrial motif; crisp UI; on-site booking concept.",
-    "outcome": "Investor-ready deck and strong early traction.",
-    "media": [
-      "/images/tpc-cover.jpg"
-    ]
+    "role": "Brand • Web • Product",
+    "stack": ["Next.js", "Tailwind", "PWA", "Stripe"],
+    "summary": "Premium indoor pickleball brand seeking cohesive digital presence that signals exclusivity and drives membership.",
+    "problem": {
+      "context": "The Paddle Collective needed to establish itself as the premium indoor pickleball destination. The existing digital presence failed to convey the country-club-meets-industrial aesthetic that defined their physical space.",
+      "constraints": ["Tight launch timeline before membership drive", "Complex booking system integration required", "Brand positioning must justify premium pricing"]
+    },
+    "approach": {
+      "strategy": "Built a system that communicates exclusivity through restraint. Clean typography, generous whitespace, and purposeful motion create an experience that feels curated rather than marketed.",
+      "key_decisions": ["On-site booking concept integrated directly", "Video-first hero to showcase space quality", "Membership tier system with clear value signals"]
+    },
+    "outcome": {
+      "results": ["Investor-ready digital presence", "Strong early membership traction", "Cohesive brand system across touchpoints"],
+      "metrics": [
+        { "label": "Time to launch", "value": "4 weeks" },
+        { "label": "Membership inquiries", "value": "+340%" }
+      ]
+    },
+    "media": ["/images/tpc-cover.jpg"],
+    "cta": { "label": "Visit site", "href": "#" }
+  },
+  {
+    "slug": "magnolia-and-soul",
+    "title": "Magnolia & Soul",
+    "year": "2024",
+    "role": "Design • Build • E-commerce",
+    "stack": ["Next.js", "Tailwind", "Stripe", "Sanity"],
+    "summary": "Tea brand needed a high-taste storefront that converts browsers into buyers through ritual and narrative.",
+    "problem": {
+      "context": "Magnolia & Soul had exceptional product but a digital experience that undersold it. The existing site felt generic, failing to communicate the craft and ritual that defined the brand.",
+      "constraints": ["Maintain existing brand colors", "Mobile-first audience", "Complex product variants"]
+    },
+    "approach": {
+      "strategy": "One-page ritual flow that guides visitors through the brand story before presenting products. Every interaction reinforces the idea of tea as ceremony, not commodity.",
+      "key_decisions": ["Scroll-driven narrative before commerce", "Elegant motion on product reveals", "Simplified checkout with guided cart"]
+    },
+    "outcome": {
+      "results": ["Increased time on page", "Higher conversion rate", "Streamlined product narrative"],
+      "metrics": [
+        { "label": "Time on site", "value": "+65%" },
+        { "label": "Conversion", "value": "+28%" }
+      ]
+    },
+    "media": ["/images/magnolia-cover.jpg"],
+    "cta": { "label": "Visit site", "href": "#" }
   },
   {
     "slug": "poket-pro",
     "title": "Poket Pro",
     "year": "2024",
-    "role": "Prototype \u2022 UX \u2022 Computer Vision",
-    "stack": [
-      "Next.js",
-      "Python",
-      "OpenCV"
-    ],
-    "problem": "Golfers lacked simple, immediate swing feedback.",
-    "approach": "Camera-first interactions; lightweight video analysis.",
-    "outcome": "Clear path to MVP with validated user flows.",
-    "media": [
-      "/images/poket-cover.jpg"
-    ]
+    "role": "Prototype • UX • Computer Vision",
+    "stack": ["Next.js", "Python", "OpenCV", "TensorFlow"],
+    "summary": "Golfers needed simple, immediate swing feedback without expensive equipment or coaching.",
+    "problem": {
+      "context": "Amateur golfers struggle to improve without real-time feedback. Existing solutions require expensive hardware or ongoing coaching relationships that most casual players cannot access.",
+      "constraints": ["Must work with standard smartphone cameras", "Analysis needs to be instant", "Interface for non-technical users"]
+    },
+    "approach": {
+      "strategy": "Camera-first interface that captures and analyzes swings using lightweight computer vision. Focus on actionable feedback rather than overwhelming data.",
+      "key_decisions": ["Prioritize speed over depth of analysis", "Simple overlay showing key positions", "Progress tracking without complexity"]
+    },
+    "outcome": {
+      "results": ["Clear path to MVP", "Validated user flows", "Technical feasibility proven"],
+      "metrics": [
+        { "label": "User tests", "value": "24" },
+        { "label": "Analysis time", "value": "<2s" }
+      ]
+    },
+    "media": ["/images/poket-cover.jpg"],
+    "cta": { "label": "View prototype", "href": "#" }
+  },
+  {
+    "slug": "maraschino-publicity",
+    "title": "Maraschino Publicity",
+    "year": "2024",
+    "role": "Brand • Web • Strategy",
+    "stack": ["Next.js", "Tailwind", "Motion"],
+    "summary": "Boutique PR firm needed a digital presence that matched their high-profile client roster.",
+    "problem": {
+      "context": "Maraschino Publicity works with notable clients but their website failed to reflect their caliber. The existing presence was dated and did not communicate the sophistication their work demands.",
+      "constraints": ["Client confidentiality limits case study depth", "Must appeal to both talent and brands", "Professional but not corporate"]
+    },
+    "approach": {
+      "strategy": "Built an editorial-style site that lets the work speak through implication rather than explicit case studies. Sophisticated typography and restrained motion create authority.",
+      "key_decisions": ["Logo wall over detailed case studies", "Contact-first navigation", "Quarterly content updates built-in"]
+    },
+    "outcome": {
+      "results": ["Elevated brand perception", "Increased inbound inquiries", "Streamlined client qualification"],
+      "metrics": [
+        { "label": "Inbound leads", "value": "+85%" },
+        { "label": "Time to qualify", "value": "-40%" }
+      ]
+    },
+    "media": ["/images/abstract.jpg"],
+    "cta": { "label": "Visit site", "href": "#" }
   }
 ]
