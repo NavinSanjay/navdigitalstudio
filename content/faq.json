@@ -1,14 +1,22 @@
 [
   {
     "q": "What is your typical timeline?",
-    "a": "2-6 weeks for most builds; larger systems 6-10+ weeks."
+    "a": "2-6 weeks for most builds. Larger systems with complex integrations run 6-10+ weeks. We scope carefully upfront so timelines are predictable."
   },
   {
     "q": "How do we start?",
-    "a": "Book a discovery call or submit the brief\u2014then we shape scope, timeline, and budget."
+    "a": "Book a discovery call or submit the brief form. We review within 24 hours, then shape scope, timeline, and budget together before any commitment."
   },
   {
-    "q": "Code ownership?",
-    "a": "You own the code and assets upon payment; we keep a small credit link."
+    "q": "Who owns the code?",
+    "a": "You own the code and all assets upon final payment. We retain a small portfolio credit link. Full source code handover included."
+  },
+  {
+    "q": "Do you offer maintenance?",
+    "a": "Yes. Retainer packages available for ongoing updates, hosting management, and technical support. Discussed after initial build."
+  },
+  {
+    "q": "What if we need changes after launch?",
+    "a": "Post-launch revisions are scoped separately. Minor tweaks often included in buffer time. Larger changes quoted fairly based on scope."
   }
 ]
