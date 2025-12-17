@@ -33,9 +33,35 @@ declare namespace __next_route_internal_types__ {
 
   type StaticRoutes = 
     | `/`
+    | `/admin-cms`
+    | `/admin-cms/faqs`
+    | `/admin-cms/projects`
+    | `/admin-cms/projects/new`
+    | `/admin-cms/testimonials`
+    | `/api/admin/faqs`
+    | `/api/admin/login`
+    | `/api/admin/logout`
+    | `/api/admin/projects`
+    | `/api/admin/seed`
+    | `/api/admin/session`
+    | `/api/admin/testimonials`
     | `/api/book`
     | `/api/lead`
-  type DynamicRoutes<T extends string = string> = never
+    | `/cms-api/faqs`
+    | `/cms-api/login`
+    | `/cms-api/logout`
+    | `/cms-api/projects`
+    | `/cms-api/seed`
+    | `/cms-api/session`
+    | `/cms-api/testimonials`
+  type DynamicRoutes<T extends string = string> = 
+    | `/admin-cms/projects/${SafeSlug<T>}`
+    | `/api/admin/faqs/${SafeSlug<T>}`
+    | `/api/admin/projects/${SafeSlug<T>}`
+    | `/api/admin/testimonials/${SafeSlug<T>}`
+    | `/cms-api/faqs/${SafeSlug<T>}`
+    | `/cms-api/projects/${SafeSlug<T>}`
+    | `/cms-api/testimonials/${SafeSlug<T>}`
 
   type RouteImpl<T> = 
     | StaticRoutes

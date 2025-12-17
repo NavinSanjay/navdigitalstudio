@@ -1,4 +1,4 @@
-// File: C:\Users\Navin\Documents\Projects\navdigitalstudio-app\app\layout.tsx
+// File: C:\Users\nsanjay\OneDrive - CBRE, Inc\Documents\Personal Projects\navdigitalstudio\navdigitalstudio\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

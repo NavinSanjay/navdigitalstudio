@@ -133,7 +133,7 @@ ADMIN_PASSWORD=poopoo
 JWT_SECRET=nav-digital-studio-secret-key-change-in-production
 EMAIL_TO=bynavdigitalstudio@gmail.com
 EMAIL_FROM=Nav Digital Studio <hello@navdigital.studio>
-# RESEND_API_KEY=re_xxxxxxxxxxxx (add when ready)
+# RESEND_API_KEY=re_A1ZZPREt_LgD2RDUqPwngBaWVmcS871yV
 ```
 
 ## Notes

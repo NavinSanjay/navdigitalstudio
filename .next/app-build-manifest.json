@@ -11,10 +11,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/api/book/route": [
+    "/api/lead/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/api/book/route.js"
+      "static/chunks/app/api/lead/route.js"
     ]
   }
 }
