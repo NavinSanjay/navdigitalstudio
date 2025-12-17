@@ -11,10 +11,75 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/api/lead/route": [
+    "/admin-cms/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/api/lead/route.js"
+      "static/chunks/app/admin-cms/layout.js"
+    ],
+    "/admin-cms/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin-cms/page.js"
+    ],
+    "/cms-api/session/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/session/route.js"
+    ],
+    "/cms-api/login/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/login/route.js"
+    ],
+    "/cms-api/projects/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/projects/route.js"
+    ],
+    "/cms-api/faqs/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/faqs/route.js"
+    ],
+    "/cms-api/testimonials/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/testimonials/route.js"
+    ],
+    "/cms-api/seed/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/seed/route.js"
+    ],
+    "/admin-cms/projects/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin-cms/projects/page.js"
+    ],
+    "/admin-cms/projects/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin-cms/projects/[id]/page.js"
+    ],
+    "/cms-api/projects/[id]/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/projects/[id]/route.js"
+    ],
+    "/admin-cms/faqs/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin-cms/faqs/page.js"
+    ],
+    "/admin-cms/testimonials/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin-cms/testimonials/page.js"
+    ],
+    "/cms-api/testimonials/[id]/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/testimonials/[id]/route.js"
     ]
   }
 }

@@ -11,12 +11,40 @@ import { About } from '@/components/About'
 import { Booking } from '@/components/Booking'
 import { FAQ } from '@/components/FAQ'
 import { Footer } from '@/components/Footer'
-import projects from '@/content/projects.json'
-import testimonials from '@/content/testimonials.json'
+
+// Remove these, they don't exist:
+// import type { Proj } from '@/types/projects'
+// import type { Testimonial } from '@/types/cms'
+
+// Inline lightweight types based on your components
+type Proj = {
+  slug: string
+  title: string
+  year: string | number
+  role: string
+  stack?: string[]
+  summary?: string
+  problem?: { context?: string; constraints?: string[] }
+  approach?: { strategy?: string; key_decisions?: string[] }
+  outcome?: { results?: string[]; metrics?: { label: string; value: string }[] }
+  media: any
+  cta?: { label?: string; href?: string }
+}
+
+type Testimonial = {
+  quote: string
+  name: string
+  role?: string
+  company?: string
+}
 
 export default function ClientHome() {
   const [introDone, setIntroDone] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+
+  const [projects, setProjects] = useState<Proj[]>([])
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const el = document.documentElement
@@ -35,13 +63,40 @@ export default function ClientHome() {
     }
   }, [introDone, scrolled])
 
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [projRes, testiRes] = await Promise.all([
+          fetch('/cms-api/projects'),
+          fetch('/cms-api/testimonials'),
+        ])
+
+        const projJson = await projRes.json()
+        const testiJson = await testiRes.json()
+
+        setProjects(projJson.data ?? projJson ?? [])
+        setTestimonials(testiJson.data ?? testiJson ?? [])
+      } catch (e) {
+        console.error('[ClientHome] content fetch failed', e)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    load()
+  }, [])
+
   return (
     <main className="min-h-screen bg-black text-white">
       {!introDone && <Start onComplete={() => setIntroDone(true)} />}
 
       <Hero />
-      <ProofStrip items={testimonials as any} />
-      <ProjectsRail items={projects as any} />
+      {!loading && (
+        <>
+          <ProofStrip items={testimonials as any} />
+          <ProjectsRail items={projects as any} />
+        </>
+      )}
       <Services />
       <Pricing />
       <About />

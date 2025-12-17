@@ -1,4 +1,13 @@
 {
-  "/api/lead/route": "app/api/lead/route.js",
-  "/page": "app/page.js"
+  "/cms-api/projects/route": "app/cms-api/projects/route.js",
+  "/cms-api/projects/[id]/route": "app/cms-api/projects/[id]/route.js",
+  "/cms-api/session/route": "app/cms-api/session/route.js",
+  "/cms-api/testimonials/route": "app/cms-api/testimonials/route.js",
+  "/cms-api/faqs/route": "app/cms-api/faqs/route.js",
+  "/page": "app/page.js",
+  "/admin-cms/page": "app/admin-cms/page.js",
+  "/admin-cms/projects/page": "app/admin-cms/projects/page.js",
+  "/admin-cms/projects/[id]/page": "app/admin-cms/projects/[id]/page.js",
+  "/admin-cms/faqs/page": "app/admin-cms/faqs/page.js",
+  "/admin-cms/testimonials/page": "app/admin-cms/testimonials/page.js"
 }
