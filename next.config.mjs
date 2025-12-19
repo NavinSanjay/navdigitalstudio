@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  
+  // Fixed - moved from experimental
   typedRoutes: true,
+  
   outputFileTracingRoot: process.cwd(),
   
-  // Disable ESLint during build
+  // CRITICAL: Disable ESLint during builds
   eslint: {
     ignoreDuringBuilds: true,
   },
