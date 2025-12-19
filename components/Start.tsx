@@ -15,7 +15,12 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
   const textAnimatedRef = useRef(false)
   const isMountedRef = useRef(true)
   const [rightTextStage, setRightTextStage] = useState<0 | 1 | 2 | null>(null)
-  const [textFall, settextFall] = useState(false)
+  const [textFall, setTextFall] = useState(false)
+
+  const leftFlowerControls = useAnimation()
+  const rightFlowerControls = useAnimation()
+  const textControls = useAnimation()
+  const containerControls = useAnimation()
 
   useEffect(() => {
     return () => {
@@ -23,19 +28,15 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
     }
   }, [])
 
-    const safeSetRightTextStage = useCallback((stage: 0 | 1 | 2) => {
+  const safeSetRightTextStage = useCallback((stage: 0 | 1 | 2) => {
     if (!isMountedRef.current) return
     setTimeout(() => {
-        if (!isMountedRef.current) return
-        setRightTextStage(stage)
+      if (!isMountedRef.current) return
+      setRightTextStage(stage)
     }, 0)
-    }, [])
+  }, [])
 
-    if (!isMountedRef.current) return null
-
-  const leftFlowerControls = useAnimation()
-  const rightFlowerControls = useAnimation()
-  const textControls = useAnimation()
+  if (!isMountedRef.current) return null
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
@@ -53,7 +54,9 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
       if (scrollCooldown.current || phaseRef.current === 'done') return
       e.preventDefault()
       scrollCooldown.current = true
-      setTimeout(() => (scrollCooldown.current = false), 300)
+      setTimeout(() => {
+        scrollCooldown.current = false
+      }, 300)
       advancePhase()
     }
     window.addEventListener('wheel', handleScroll, { passive: false })
@@ -91,42 +94,88 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
 
   const startFlower = () => {
     setPhase('flower')
-    leftFlowerControls.start({ x: '-150%', transition: { duration: isMobile ? 3.2 : 2 } })
-    rightFlowerControls.start({ x: '150%', transition: { duration: isMobile ? 3.2 : 2 } })
-    settextFall(true)
+    leftFlowerControls.start({
+      x: '-150%',
+      transition: { duration: isMobile ? 3.2 : 2 },
+    })
+    rightFlowerControls.start({
+      x: '150%',
+      transition: { duration: isMobile ? 3.2 : 2 },
+    })
+    setTextFall(true)
     setTimeout(() => setShowText(true), isMobile ? 1000 : 500)
     setTimeout(() => fadeInText(), isMobile ? 1200 : 700)
   }
 
   const startTextFade = () => {
     setPhase('text')
+
+    // fade central copy up and out
     textControls.start({
       opacity: 0,
       y: -50,
-      transition: { duration: isMobile ? 1.4 : 0.7 },
+      transition: { duration: isMobile ? 1.0 : 0.6 },
     })
-    setTimeout(() => onComplete(), isMobile ? 800 : 500)
-    setTimeout(() => setPhase('done'), isMobile ? 1000 : 700)
+
+    // fade entire intro to black, then signal completion
+    containerControls
+      .start({
+        opacity: 0,
+        transition: {
+          duration: isMobile ? 0.8 : 0.5,
+          ease: 'easeInOut',
+        },
+      })
+      .then(() => {
+        if (!isMountedRef.current) return
+        onComplete()
+        setPhase('done')
+      })
   }
 
   return (
-    <div className="relative" style={{ height: phase === 'done' ? '100vh' : '200vh' }}>
-      <section id="heroload"
+    <div
+      className="relative"
+      style={{ height: phase === 'done' ? '100vh' : '200vh' }}
+    >
+      <motion.section
+        id="heroload"
         className="sticky top-0 h-screen w-full bg-black text-white flex items-center justify-center text-center overflow-hidden"
         onClick={handleClickOrTap}
         onTouchStart={handleClickOrTap}
+        animate={containerControls}
+        initial={{ opacity: 1 }}
       >
         {isMobile ? (
           <>
             <div className="absolute top-[10%] w-full flex flex-col items-center space-y-10 text-4xl font-bold z-20">
-              <BlurText text="NAV" delay={150} animateBy="letters" direction="top" animationFrom={undefined} animationTo={undefined} onAnimationComplete={undefined} />
-              <BlurText text="DIGITAL" delay={150} animateBy="letters" direction="top" animationFrom={undefined} animationTo={undefined} onAnimationComplete={undefined} />
-              <BlurText text="STUDIO" delay={150} animateBy="letters" direction="top" animationFrom={undefined} animationTo={undefined} onAnimationComplete={() => safeSetRightTextStage(0)} />
+              <BlurText
+                text="NAV"
+                delay={150}
+                animateBy="letters"
+                direction="top"
+              />
+              <BlurText
+                text="DIGITAL"
+                delay={150}
+                animateBy="letters"
+                direction="top"
+              />
+              <BlurText
+                text="STUDIO"
+                delay={150}
+                animateBy="letters"
+                direction="top"
+                onAnimationComplete={() => safeSetRightTextStage(0)}
+              />
             </div>
 
             <AnimatePresence mode="wait">
               {rightTextStage !== null && (
-                <div key="decrypt-sequence" className="absolute bottom-[10%] w-full flex flex-col items-center space-y-10 text-4xl font-bold z-20">
+                <div
+                  key="decrypt-sequence"
+                  className="absolute bottom-[10%] w-full flex flex-col items-center space-y-10 text-4xl font-bold z-20"
+                >
                   <DecryptedText
                     text="ELEVATE"
                     animateOn="load"
@@ -150,21 +199,32 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
               )}
             </AnimatePresence>
           </>
-        ) : ( //Deskto0p
-          <motion.div className="absolute inset-0 flex items-center justify-between px-20 text-7xl font-bold text-white z-10" 
-          initial={{ opacity: 1, y: 0 }} 
-          animate={{ opacity: textFall ? 0 : 1, y: textFall ? 100 : 0 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
+        ) : (
+          // Desktop
+          <motion.div
+            className="absolute inset-0 flex items-center justify-between px-20 text-7xl font-bold text-white z-10"
+            initial={{ opacity: 1, y: 0 }}
+            animate={{ opacity: textFall ? 0 : 1, y: textFall ? 100 : 0 }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
           >
             <div className="flex flex-col items-start text-left space-y-20">
-              <BlurText text="NAV" delay={150} animateBy="letters" direction="top" animationFrom={undefined} animationTo={undefined} onAnimationComplete={undefined} />
-              <BlurText text="DIGITAL" delay={150} animateBy="letters" direction="top" animationFrom={undefined} animationTo={undefined} onAnimationComplete={undefined} />
-              <BlurText text="STUDIO" delay={150} animateBy="letters" direction="top" animationFrom={undefined} animationTo={undefined} onAnimationComplete={() => safeSetRightTextStage(0)} />
+              <BlurText text="NAV" delay={150} animateBy="letters" direction="top" />
+              <BlurText text="DIGITAL" delay={150} animateBy="letters" direction="top" />
+              <BlurText
+                text="STUDIO"
+                delay={150}
+                animateBy="letters"
+                direction="top"
+                onAnimationComplete={() => safeSetRightTextStage(0)}
+              />
             </div>
 
             <AnimatePresence mode="wait">
               {rightTextStage !== null && (
-                <div key="decrypt-sequence" className="flex flex-col items-end text-right space-y-20">
+                <div
+                  key="decrypt-sequence"
+                  className="flex flex-col items-end text-right space-y-20"
+                >
                   <DecryptedText
                     text="ELEVATE"
                     animateOn="load"
@@ -189,6 +249,7 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
             </AnimatePresence>
           </motion.div>
         )}
+
         <motion.img
           src="/images/left_flower.png"
           alt="Left Flower"
@@ -203,6 +264,7 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
           animate={rightFlowerControls}
           initial={{ x: '0%' }}
         />
+
         {showText && (
           <motion.div
             className="z-0 max-w-2xl"
@@ -210,14 +272,16 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
             animate={textControls}
           >
             <h1 className="text-3xl md:text-5xl font-semibold tracking-tight">
-              Digital systems <span className="text-accent">that move the needle</span>.
+              Digital systems{' '}
+              <span className="text-accent">that move the needle</span>.
             </h1>
             <p className="text-muted-foreground mt-4 text-base md:text-lg">
-              Clean design. Smart code. Strategy-led results. Crafted from scratch for the brands that lead.
+              Clean design. Smart code. Strategy-led results. Crafted from scratch
+              for the brands that lead.
             </p>
           </motion.div>
         )}
-      </section>
+      </motion.section>
     </div>
   )
 }

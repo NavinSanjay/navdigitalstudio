@@ -11,6 +11,16 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
+    "/cms-api/projects/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/projects/route.js"
+    ],
+    "/cms-api/testimonials/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/cms-api/testimonials/route.js"
+    ],
     "/admin-cms/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -31,25 +41,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/cms-api/login/route.js"
     ],
-    "/cms-api/projects/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/cms-api/projects/route.js"
-    ],
     "/cms-api/faqs/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/cms-api/faqs/route.js"
-    ],
-    "/cms-api/testimonials/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/cms-api/testimonials/route.js"
-    ],
-    "/cms-api/seed/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/cms-api/seed/route.js"
     ],
     "/admin-cms/projects/page": [
       "static/chunks/webpack.js",
@@ -66,20 +61,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/cms-api/projects/[id]/route.js"
     ],
-    "/admin-cms/faqs/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/admin-cms/faqs/page.js"
-    ],
     "/admin-cms/testimonials/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/admin-cms/testimonials/page.js"
-    ],
-    "/cms-api/testimonials/[id]/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/cms-api/testimonials/[id]/route.js"
     ]
   }
 }

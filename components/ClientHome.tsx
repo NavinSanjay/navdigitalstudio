@@ -12,11 +12,6 @@ import { Booking } from '@/components/Booking'
 import { FAQ } from '@/components/FAQ'
 import { Footer } from '@/components/Footer'
 
-// Remove these, they don't exist:
-// import type { Proj } from '@/types/projects'
-// import type { Testimonial } from '@/types/cms'
-
-// Inline lightweight types based on your components
 type Proj = {
   slug: string
   title: string
@@ -50,7 +45,9 @@ export default function ClientHome() {
     const el = document.documentElement
     if (!introDone) el.style.overflow = 'hidden'
     else el.style.overflow = ''
-    return () => { el.style.overflow = '' }
+    return () => {
+      el.style.overflow = ''
+    }
   }, [introDone])
 
   useEffect(() => {
@@ -74,10 +71,25 @@ export default function ClientHome() {
         const projJson = await projRes.json()
         const testiJson = await testiRes.json()
 
-        setProjects(projJson.data ?? projJson ?? [])
-        setTestimonials(testiJson.data ?? testiJson ?? [])
+        // Normalize to arrays
+        const projectsData = Array.isArray(projJson?.data) 
+          ? projJson.data 
+          : Array.isArray(projJson) 
+            ? projJson 
+            : []
+        
+        const testimonialsData = Array.isArray(testiJson?.data) 
+          ? testiJson.data 
+          : Array.isArray(testiJson) 
+            ? testiJson 
+            : []
+
+        setProjects(projectsData)
+        setTestimonials(testimonialsData)
       } catch (e) {
         console.error('[ClientHome] content fetch failed', e)
+        setProjects([])
+        setTestimonials([])
       } finally {
         setLoading(false)
       }
@@ -85,18 +97,23 @@ export default function ClientHome() {
 
     load()
   }, [])
+  console.log('Debug:', { loading, projectsCount: projects.length, testimonialsCount: testimonials.length })
 
   return (
     <main className="min-h-screen bg-black text-white">
       {!introDone && <Start onComplete={() => setIntroDone(true)} />}
 
-      <Hero />
-      {!loading && (
-        <>
-          <ProofStrip items={testimonials as any} />
-          <ProjectsRail items={projects as any} />
-        </>
+      <Hero introDone={introDone} />
+
+      {/* Render each independently - don't block one if the other fails */}
+      {!loading && testimonials.length > 0 && (
+        <ProofStrip items={testimonials} />
       )}
+      
+      {!loading && projects.length > 0 && (
+        <ProjectsRail items={projects} />
+      )}
+      
       <Services />
       <Pricing />
       <About />

@@ -5,13 +5,6 @@ import { ReactNode, useEffect } from 'react'
 import { initAnalytics } from '@/lib/analytics'
 import '@/lib/sentry.client'
 
-// export const metadata = {
-//   title: 'Nav Digital Studio',
-//   description: 'Black-and-white, x-ray-aesthetic portfolio that converts.',
-//   openGraph: { title: 'Nav Digital Studio', description: 'Elevated taste + sharp execution -> book.', images: ['/og/og.jpg'] },
-//   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000')
-// }
-
 export default function RootLayout({ children }: { children: ReactNode }) {
   useEffect(() => { initAnalytics() }, [])
   return (
