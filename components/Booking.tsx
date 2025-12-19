@@ -1,10 +1,10 @@
 'use client'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { track } from '@/lib/analytics'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, CheckCircle, ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Check } from 'lucide-react'
 
 const LeadSchema = z.object({
   name: z.string().min(2),
@@ -21,24 +21,31 @@ const LeadSchema = z.object({
 type Lead = z.infer<typeof LeadSchema>
 
 const budgetRanges = [
-  { value: 'NZD 3k–6k', label: 'Starter', sublabel: '3k–6k' },
-  { value: 'NZD 7k–15k', label: 'Growth', sublabel: '7k–15k' },
-  { value: 'NZD 16k+', label: 'Bespoke', sublabel: '16k+' },
-  { value: 'Not sure', label: 'Not sure yet', sublabel: '—' },
+  { value: 'NZD 3k–6k', label: 'Starter', price: '3k–6k' },
+  { value: 'NZD 7k–15k', label: 'Growth', price: '7k–15k' },
+  { value: 'NZD 16k+', label: 'Bespoke', price: '16k+' },
+  { value: 'Not sure', label: 'Flexible', price: 'TBD' },
 ]
 
 const timelineOptions = [
-  { value: 'ASAP', label: 'ASAP' },
-  { value: '1 month', label: '1 month' },
-  { value: '2-3 months', label: '2-3 months' },
-  { value: 'Flexible', label: 'Flexible' },
+  { value: 'ASAP', label: 'Immediate', desc: 'Within 2 weeks' },
+  { value: '1 month', label: '1 Month', desc: 'Standard delivery' },
+  { value: '2-3 months', label: '2-3 Months', desc: 'Extended timeline' },
+  { value: 'Flexible', label: 'Flexible', desc: 'No rush' },
+]
+
+const steps = [
+  { id: 1, title: 'Project Scope', desc: 'Investment & timeline' },
+  { id: 2, title: 'Contact', desc: 'Your details' },
+  { id: 3, title: 'Vision', desc: 'Project goals' },
 ]
 
 export function Booking() {
-  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<Lead>()
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors }, trigger } = useForm<Lead>()
   const [status, setStatus] = useState<'idle' | 'submitting' | 'ok' | 'err'>('idle')
   const [message, setMessage] = useState<string>('')
-  const [focusedField, setFocusedField] = useState<string | null>(null)
+  const [currentStep, setCurrentStep] = useState(1)
+  const formRef = useRef<HTMLFormElement>(null)
   
   const selectedBudget = watch('budget')
   const selectedTimeline = watch('timeline')
@@ -71,369 +78,454 @@ export function Booking() {
     }
   }
 
-  return (
-    <section id="booking" className="relative py-24 md:py-32 bg-black overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.03),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,255,255,0.02),transparent_50%)]" />
-      
-      {/* Grid pattern */}
-      <div className="absolute inset-0 opacity-[0.02]">
-        <div className="w-full h-full" style={{
-          backgroundImage: 'linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)',
-          backgroundSize: '60px 60px'
-        }} />
-      </div>
+  const nextStep = async () => {
+    let fieldsToValidate: (keyof Lead)[] = []
+    if (currentStep === 1) fieldsToValidate = ['budget', 'timeline']
+    if (currentStep === 2) fieldsToValidate = ['name', 'email']
+    if (currentStep === 3) fieldsToValidate = ['goals']
+    
+    const isValid = await trigger(fieldsToValidate)
+    if (isValid && currentStep < 3) {
+      setCurrentStep(prev => prev + 1)
+    }
+  }
 
-      <div className="relative mx-auto max-w-6xl px-6">
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(prev => prev - 1)
+  }
+
+  const slideVariants = {
+    enter: (direction: number) => ({ x: direction > 0 ? 100 : -100, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (direction: number) => ({ x: direction < 0 ? 100 : -100, opacity: 0 })
+  }
+
+  return (
+    <section id="booking" className="relative min-h-screen bg-black py-20 md:py-32 overflow-hidden">
+      {/* Ambient gradient */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-white/[0.02] rounded-full blur-[120px] pointer-events-none" />
+      
+      <div className="relative mx-auto max-w-5xl px-6">
         {/* Header */}
-        <div className="text-center mb-16 md:mb-20">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8"
-          >
-            <Sparkles size={14} className="text-white/50" />
-            <span className="text-xs tracking-[0.2em] uppercase text-white/50">Start a project</span>
-          </motion.div>
-          
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
-          >
-            Let's build
-            <span className="block text-white/30">something great.</span>
-          </motion.h2>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-neutral-400 text-lg max-w-md mx-auto"
-          >
-            Tell us about your project. We respond to every brief within 24 hours.
-          </motion.p>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true }}
+          className="text-center mb-16 md:mb-24"
+        >
+          <p className="text-xs tracking-[0.3em] uppercase text-white/40 mb-6">Start Your Project</p>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-white mb-6">
+            Let's create something
+            <br />
+            <span className="text-white/40">extraordinary.</span>
+          </h2>
+        </motion.div>
 
         <AnimatePresence mode="wait">
           {status === 'ok' ? (
             <motion.div
               key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="max-w-2xl mx-auto text-center py-16"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -40 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-lg mx-auto text-center py-20"
             >
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', delay: 0.2 }}
-                className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-8"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="w-24 h-24 rounded-full border border-white/20 flex items-center justify-center mx-auto mb-10"
               >
-                <CheckCircle size={40} className="text-white" />
+                <Check size={40} strokeWidth={1} className="text-white" />
               </motion.div>
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">Brief received</h3>
-              <p className="text-neutral-400 text-lg mb-8">{message}</p>
+              <h3 className="text-3xl md:text-4xl font-light tracking-tight mb-4">Brief received.</h3>
+              <p className="text-white/50 text-lg mb-10 leading-relaxed">{message}</p>
               <button 
-                onClick={() => setStatus('idle')}
-                className="text-sm text-neutral-500 hover:text-white transition underline underline-offset-4"
+                onClick={() => { setStatus('idle'); setCurrentStep(1) }}
+                className="text-sm text-white/40 hover:text-white transition-colors duration-300"
               >
-                Submit another brief
+                Submit another brief →
               </button>
             </motion.div>
           ) : (
-            <motion.form 
-              key="form"
-              onSubmit={handleSubmit(onSubmit)} 
-              className="max-w-4xl mx-auto"
+            <motion.div
+              key="form-container"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              className="max-w-3xl mx-auto"
             >
-              {/* Budget Selection - Visual Cards */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="mb-12"
-              >
-                <label className="block text-sm text-neutral-500 mb-4 tracking-wide">Investment range</label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {budgetRanges.map((range, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setValue('budget', range.value)}
-                      className={`
-                        relative p-5 rounded-2xl border text-left transition-all duration-300
-                        ${selectedBudget === range.value 
-                          ? 'bg-white text-black border-white' 
-                          : 'bg-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/[0.04]'
-                        }
-                      `}
-                    >
-                      <span className={`block text-xs mb-2 ${selectedBudget === range.value ? 'text-black/50' : 'text-white/40'}`}>
-                        NZD
-                      </span>
-                      <span className={`block text-lg font-semibold ${selectedBudget === range.value ? 'text-black' : 'text-white'}`}>
-                        {range.sublabel}
-                      </span>
-                      <span className={`block text-sm mt-1 ${selectedBudget === range.value ? 'text-black/60' : 'text-white/50'}`}>
-                        {range.label}
-                      </span>
-                      {selectedBudget === range.value && (
-                        <motion.div 
-                          layoutId="budgetIndicator"
-                          className="absolute top-3 right-3 w-2 h-2 rounded-full bg-black"
-                        />
+              {/* Progress indicator */}
+              <div className="mb-16">
+                <div className="flex items-center justify-between mb-8">
+                  {steps.map((step, i) => (
+                    <div key={step.id} className="flex items-center">
+                      <div className="flex flex-col items-center">
+                        <div 
+                          className={`
+                            w-10 h-10 rounded-full border flex items-center justify-center text-sm font-medium transition-all duration-500
+                            ${currentStep >= step.id 
+                              ? 'border-white bg-white text-black' 
+                              : 'border-white/20 text-white/40'
+                            }
+                          `}
+                        >
+                          {currentStep > step.id ? <Check size={16} /> : step.id}
+                        </div>
+                        <p className={`mt-3 text-xs tracking-wide transition-colors duration-300 hidden sm:block ${
+                          currentStep >= step.id ? 'text-white' : 'text-white/30'
+                        }`}>
+                          {step.title}
+                        </p>
+                      </div>
+                      {i < steps.length - 1 && (
+                        <div className="w-16 sm:w-24 md:w-32 h-px mx-4 relative overflow-hidden">
+                          <div className="absolute inset-0 bg-white/10" />
+                          <motion.div 
+                            className="absolute inset-0 bg-white origin-left"
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: currentStep > step.id ? 1 : 0 }}
+                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                          />
+                        </div>
                       )}
-                    </button>
+                    </div>
                   ))}
                 </div>
-                <input type="hidden" {...register('budget', { required: true })} />
-                {errors.budget && <p className="text-red-400/80 text-sm mt-2">Please select a budget range</p>}
-              </motion.div>
+              </div>
 
-              {/* Timeline Selection */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="mb-12"
-              >
-                <label className="block text-sm text-neutral-500 mb-4 tracking-wide">Timeline</label>
-                <div className="flex flex-wrap gap-3">
-                  {timelineOptions.map((opt, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setValue('timeline', opt.value)}
-                      className={`
-                        px-6 py-3 rounded-full border text-sm font-medium transition-all duration-300
-                        ${selectedTimeline === opt.value 
-                          ? 'bg-white text-black border-white' 
-                          : 'bg-transparent border-white/20 text-white/70 hover:border-white/40 hover:text-white'
-                        }
-                      `}
+              <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+                {/* Honeypot */}
+                <input 
+                  aria-hidden="true" 
+                  tabIndex={-1} 
+                  autoComplete="off" 
+                  className="hidden" 
+                  {...register('confirmEmail')} 
+                />
+
+                <AnimatePresence mode="wait" custom={currentStep}>
+                  {/* Step 1: Budget & Timeline */}
+                  {currentStep === 1 && (
+                    <motion.div
+                      key="step1"
+                      custom={1}
+                      variants={slideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="space-y-14"
                     >
-                      {opt.label}
+                      {/* Budget */}
+                      <div>
+                        <label className="block text-sm text-white/50 mb-6 tracking-wide">Investment Range</label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {budgetRanges.map((range) => (
+                            <button
+                              key={range.value}
+                              type="button"
+                              onClick={() => setValue('budget', range.value)}
+                              className={`
+                                group relative p-6 rounded-2xl border text-left transition-all duration-500
+                                ${selectedBudget === range.value 
+                                  ? 'bg-white border-white' 
+                                  : 'bg-transparent border-white/10 hover:border-white/30'
+                                }
+                              `}
+                            >
+                              <span className={`block text-2xl font-light mb-2 transition-colors duration-300 ${
+                                selectedBudget === range.value ? 'text-black' : 'text-white'
+                              }`}>
+                                {range.price}
+                              </span>
+                              <span className={`block text-xs tracking-wide uppercase transition-colors duration-300 ${
+                                selectedBudget === range.value ? 'text-black/60' : 'text-white/40'
+                              }`}>
+                                {range.label}
+                              </span>
+                              {selectedBudget === range.value && (
+                                <motion.div
+                                  layoutId="budget-check"
+                                  className="absolute top-4 right-4 w-5 h-5 rounded-full bg-black flex items-center justify-center"
+                                >
+                                  <Check size={12} className="text-white" />
+                                </motion.div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                        <input type="hidden" {...register('budget', { required: true })} />
+                        {errors.budget && (
+                          <p className="text-white/60 text-sm mt-4">Please select an investment range</p>
+                        )}
+                      </div>
+
+                      {/* Timeline */}
+                      <div>
+                        <label className="block text-sm text-white/50 mb-6 tracking-wide">Timeline</label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {timelineOptions.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => setValue('timeline', opt.value)}
+                              className={`
+                                group relative p-6 rounded-2xl border text-left transition-all duration-500
+                                ${selectedTimeline === opt.value 
+                                  ? 'bg-white border-white' 
+                                  : 'bg-transparent border-white/10 hover:border-white/30'
+                                }
+                              `}
+                            >
+                              <span className={`block text-lg font-light mb-1 transition-colors duration-300 ${
+                                selectedTimeline === opt.value ? 'text-black' : 'text-white'
+                              }`}>
+                                {opt.label}
+                              </span>
+                              <span className={`block text-xs transition-colors duration-300 ${
+                                selectedTimeline === opt.value ? 'text-black/50' : 'text-white/30'
+                              }`}>
+                                {opt.desc}
+                              </span>
+                              {selectedTimeline === opt.value && (
+                                <motion.div
+                                  layoutId="timeline-check"
+                                  className="absolute top-4 right-4 w-5 h-5 rounded-full bg-black flex items-center justify-center"
+                                >
+                                  <Check size={12} className="text-white" />
+                                </motion.div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                        <input type="hidden" {...register('timeline', { required: true })} />
+                        {errors.timeline && (
+                          <p className="text-white/60 text-sm mt-4">Please select a timeline</p>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Step 2: Contact Details */}
+                  {currentStep === 2 && (
+                    <motion.div
+                      key="step2"
+                      custom={2}
+                      variants={slideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="space-y-10"
+                    >
+                      <div className="grid md:grid-cols-2 gap-8">
+                        {/* Name */}
+                        <div className="group">
+                          <label className="block text-sm text-white/50 mb-3 tracking-wide">Name</label>
+                          <input 
+                            placeholder="Your full name"
+                            {...register('name', { required: true })} 
+                            className={`
+                              w-full px-0 py-4 bg-transparent border-0 border-b-2 text-xl font-light
+                              placeholder:text-white/20 focus:outline-none transition-all duration-300
+                              ${errors.name ? 'border-white/60' : 'border-white/10 focus:border-white/50'}
+                            `}
+                            data-testid="booking-name"
+                          />
+                          {errors.name && (
+                            <p className="text-white/50 text-sm mt-2">Please enter your name</p>
+                          )}
+                        </div>
+
+                        {/* Email */}
+                        <div className="group">
+                          <label className="block text-sm text-white/50 mb-3 tracking-wide">Email</label>
+                          <input 
+                            type="email"
+                            placeholder="you@company.com"
+                            {...register('email', { required: true })} 
+                            className={`
+                              w-full px-0 py-4 bg-transparent border-0 border-b-2 text-xl font-light
+                              placeholder:text-white/20 focus:outline-none transition-all duration-300
+                              ${errors.email ? 'border-white/60' : 'border-white/10 focus:border-white/50'}
+                            `}
+                            data-testid="booking-email"
+                          />
+                          {errors.email && (
+                            <p className="text-white/50 text-sm mt-2">Please enter a valid email</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-8">
+                        {/* Company */}
+                        <div className="group">
+                          <label className="block text-sm text-white/50 mb-3 tracking-wide">
+                            Company <span className="text-white/20">— optional</span>
+                          </label>
+                          <input 
+                            placeholder="Your company"
+                            {...register('company')} 
+                            className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-white/10 text-xl font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-all duration-300"
+                          />
+                        </div>
+
+                        {/* Website */}
+                        <div className="group">
+                          <label className="block text-sm text-white/50 mb-3 tracking-wide">
+                            Current Website <span className="text-white/20">— optional</span>
+                          </label>
+                          <input 
+                            placeholder="https://..."
+                            {...register('website')} 
+                            className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-white/10 text-xl font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-all duration-300"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Step 3: Project Vision */}
+                  {currentStep === 3 && (
+                    <motion.div
+                      key="step3"
+                      custom={3}
+                      variants={slideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="space-y-10"
+                    >
+                      {/* Goals */}
+                      <div>
+                        <label className="block text-sm text-white/50 mb-3 tracking-wide">What are you looking to build?</label>
+                        <textarea 
+                          placeholder="Describe your project vision, goals, and what success looks like..."
+                          {...register('goals', { required: true })} 
+                          rows={5}
+                          className={`
+                            w-full px-0 py-4 bg-transparent border-0 border-b-2 text-lg font-light resize-none
+                            placeholder:text-white/20 focus:outline-none transition-all duration-300
+                            ${errors.goals ? 'border-white/60' : 'border-white/10 focus:border-white/50'}
+                          `}
+                          data-testid="booking-goals"
+                        />
+                        {errors.goals && (
+                          <p className="text-white/50 text-sm mt-2">Please describe your project</p>
+                        )}
+                      </div>
+
+                      {/* Challenges */}
+                      <div>
+                        <label className="block text-sm text-white/50 mb-3 tracking-wide">
+                          Current Challenges <span className="text-white/20">— optional</span>
+                        </label>
+                        <textarea 
+                          placeholder="What's not working with your current setup?"
+                          {...register('issues')} 
+                          rows={3}
+                          className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-white/10 text-lg font-light resize-none placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-all duration-300"
+                        />
+                      </div>
+
+                      {/* Inspiration */}
+                      <div>
+                        <label className="block text-sm text-white/50 mb-3 tracking-wide">
+                          Inspiration <span className="text-white/20">— optional</span>
+                        </label>
+                        <textarea 
+                          placeholder="Links to sites or products you admire..."
+                          {...register('inspiration')} 
+                          rows={2}
+                          className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-white/10 text-lg font-light resize-none placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-all duration-300"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Error message */}
+                {status === 'err' && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-white/70 text-sm mt-8"
+                  >
+                    {message}
+                  </motion.p>
+                )}
+
+                {/* Navigation */}
+                <div className="flex items-center justify-between mt-16 pt-8 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={prevStep}
+                    className={`
+                      group flex items-center gap-3 text-sm text-white/50 hover:text-white transition-colors duration-300
+                      ${currentStep === 1 ? 'invisible' : ''}
+                    `}
+                  >
+                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform duration-300" />
+                    Back
+                  </button>
+
+                  {currentStep < 3 ? (
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      className="group flex items-center gap-3 px-8 py-4 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-all duration-300"
+                    >
+                      Continue
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
                     </button>
+                  ) : (
+                    <motion.button 
+                      type="submit"
+                      disabled={status === 'submitting'}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="group relative flex items-center gap-3 px-10 py-4 rounded-full bg-white text-black text-sm font-medium overflow-hidden disabled:opacity-50 transition-all duration-300"
+                      data-testid="booking-submit"
+                    >
+                      <span className="relative z-10">
+                        {status === 'submitting' ? 'Sending...' : 'Submit Brief'}
+                      </span>
+                      {status !== 'submitting' && (
+                        <ArrowRight size={16} className="relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
+                      )}
+                    </motion.button>
+                  )}
+                </div>
+              </form>
+
+              {/* Trust strip */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                viewport={{ once: true }}
+                className="mt-20 pt-10 border-t border-white/5"
+              >
+                <div className="flex flex-wrap justify-center gap-10 md:gap-16">
+                  {[
+                    { value: '24h', label: 'Response' },
+                    { value: '40+', label: 'Projects' },
+                    { value: '100%', label: 'Ownership' },
+                  ].map((stat, i) => (
+                    <div key={i} className="text-center">
+                      <div className="text-2xl font-light text-white/70 mb-1">{stat.value}</div>
+                      <div className="text-xs tracking-wide uppercase text-white/30">{stat.label}</div>
+                    </div>
                   ))}
                 </div>
-                <input type="hidden" {...register('timeline', { required: true })} />
-                {errors.timeline && <p className="text-red-400/80 text-sm mt-2">Please select a timeline</p>}
               </motion.div>
-
-              {/* Contact Details */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="grid md:grid-cols-2 gap-6 mb-8"
-              >
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm text-neutral-500 mb-2">Name</label>
-                    <input 
-                      placeholder="Your name" 
-                      {...register('name', { required: true })} 
-                      onFocus={() => setFocusedField('name')}
-                      onBlur={() => setFocusedField(null)}
-                      className={`
-                        w-full px-0 py-3 bg-transparent border-0 border-b text-lg transition-all
-                        placeholder:text-white/20 focus:outline-none
-                        ${errors.name ? 'border-red-400/50' : focusedField === 'name' ? 'border-white' : 'border-white/20'}
-                      `}
-                      data-testid="booking-name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-neutral-500 mb-2">Email</label>
-                    <input 
-                      type="email"
-                      placeholder="you@company.com" 
-                      {...register('email', { required: true })} 
-                      onFocus={() => setFocusedField('email')}
-                      onBlur={() => setFocusedField(null)}
-                      className={`
-                        w-full px-0 py-3 bg-transparent border-0 border-b text-lg transition-all
-                        placeholder:text-white/20 focus:outline-none
-                        ${errors.email ? 'border-red-400/50' : focusedField === 'email' ? 'border-white' : 'border-white/20'}
-                      `}
-                      data-testid="booking-email"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm text-neutral-500 mb-2">Company <span className="text-white/30">(optional)</span></label>
-                    <input 
-                      placeholder="Company name" 
-                      {...register('company')} 
-                      onFocus={() => setFocusedField('company')}
-                      onBlur={() => setFocusedField(null)}
-                      className={`
-                        w-full px-0 py-3 bg-transparent border-0 border-b text-lg transition-all
-                        placeholder:text-white/20 focus:outline-none
-                        ${focusedField === 'company' ? 'border-white' : 'border-white/20'}
-                      `}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-neutral-500 mb-2">Current website <span className="text-white/30">(optional)</span></label>
-                    <input 
-                      placeholder="https://..." 
-                      {...register('website')} 
-                      onFocus={() => setFocusedField('website')}
-                      onBlur={() => setFocusedField(null)}
-                      className={`
-                        w-full px-0 py-3 bg-transparent border-0 border-b text-lg transition-all
-                        placeholder:text-white/20 focus:outline-none
-                        ${focusedField === 'website' ? 'border-white' : 'border-white/20'}
-                      `}
-                    />
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Project Details */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="space-y-8 mb-12"
-              >
-                <div>
-                  <label className="block text-sm text-neutral-500 mb-2">What are you looking to build?</label>
-                  <textarea 
-                    placeholder="Tell us about your project goals and what success looks like..." 
-                    {...register('goals', { required: true })} 
-                    rows={4}
-                    onFocus={() => setFocusedField('goals')}
-                    onBlur={() => setFocusedField(null)}
-                    className={`
-                      w-full px-0 py-3 bg-transparent border-0 border-b text-lg transition-all resize-none
-                      placeholder:text-white/20 focus:outline-none
-                      ${errors.goals ? 'border-red-400/50' : focusedField === 'goals' ? 'border-white' : 'border-white/20'}
-                    `}
-                    data-testid="booking-goals"
-                  />
-                  {errors.goals && <p className="text-red-400/80 text-sm mt-2">Please tell us about your project</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm text-neutral-500 mb-2">Current challenges <span className="text-white/30">(optional)</span></label>
-                  <textarea 
-                    placeholder="What's not working with your current setup?" 
-                    {...register('issues')} 
-                    rows={2}
-                    onFocus={() => setFocusedField('issues')}
-                    onBlur={() => setFocusedField(null)}
-                    className={`
-                      w-full px-0 py-3 bg-transparent border-0 border-b text-lg transition-all resize-none
-                      placeholder:text-white/20 focus:outline-none
-                      ${focusedField === 'issues' ? 'border-white' : 'border-white/20'}
-                    `}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm text-neutral-500 mb-2">Inspiration <span className="text-white/30">(optional)</span></label>
-                  <textarea 
-                    placeholder="Links to sites or products you admire..." 
-                    {...register('inspiration')} 
-                    rows={2}
-                    onFocus={() => setFocusedField('inspiration')}
-                    onBlur={() => setFocusedField(null)}
-                    className={`
-                      w-full px-0 py-3 bg-transparent border-0 border-b text-lg transition-all resize-none
-                      placeholder:text-white/20 focus:outline-none
-                      ${focusedField === 'inspiration' ? 'border-white' : 'border-white/20'}
-                    `}
-                  />
-                </div>
-              </motion.div>
-
-              {/* Honeypot */}
-              <input 
-                aria-hidden="true" 
-                tabIndex={-1} 
-                autoComplete="off" 
-                className="hidden" 
-                placeholder="Confirm Email" 
-                {...register('confirmEmail')} 
-              />
-
-              {/* Error message */}
-              {status === 'err' && (
-                <motion.p 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-red-400 text-sm mb-6"
-                >
-                  {message}
-                </motion.p>
-              )}
-
-              {/* Submit */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
-              >
-                <p className="text-sm text-neutral-600 max-w-xs">
-                  We review every submission personally and respond within 24 hours.
-                </p>
-                <motion.button 
-                  type="submit"
-                  disabled={status === 'submitting'}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-black font-medium overflow-hidden disabled:opacity-50"
-                  data-testid="booking-submit"
-                >
-                  <span className="relative z-10">
-                    {status === 'submitting' ? 'Sending...' : 'Submit brief'}
-                  </span>
-                  {status !== 'submitting' && (
-                    <ArrowRight size={18} className="relative z-10 group-hover:translate-x-1 transition-transform" />
-                  )}
-                  <motion.div 
-                    className="absolute inset-0 bg-neutral-200"
-                    initial={{ x: '100%' }}
-                    whileHover={{ x: 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.button>
-              </motion.div>
-            </motion.form>
+            </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Trust indicators */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-20 pt-12 border-t border-white/10"
-        >
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-center">
-            {[
-              { value: '24h', label: 'Response time' },
-              { value: '40+', label: 'Projects delivered' },
-              { value: '100%', label: 'Code ownership' },
-            ].map((stat, i) => (
-              <div key={i}>
-                <div className="text-2xl font-bold text-white/80">{stat.value}</div>
-                <div className="text-sm text-neutral-600">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   )
