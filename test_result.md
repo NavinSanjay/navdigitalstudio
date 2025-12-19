@@ -41,5 +41,20 @@
 - Backend submission must remain functional
 
 ## Test Status
-- [ ] Frontend flow testing pending
-- [ ] API endpoint testing pending
+- [x] Frontend visual testing - PASSED
+  - Multi-step progress indicator renders correctly
+  - Budget cards display with 4 options
+  - Timeline cards display with descriptions
+  - Selection state shows white bg + checkmark
+  - Validation messages appear correctly
+  - Mobile responsive (2-column grid)
+  - "Continue" button styled elegantly
+  
+- [x] API endpoint testing - PASSED
+  - POST /api/lead returns `{"ok": true}`
+  - Logs lead details when no RESEND_API_KEY
+  - Validation working correctly
+  - Response time: ~70ms
+
+## Issues Fixed
+- Fixed Resend API instantiation error (moved inside conditional block)
