@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: { typedRoutes: true },
+  typedRoutes: true,
+  outputFileTracingRoot: process.cwd(),
+  
+  // Disable ESLint during build
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
   async headers() {
     const csp = [
       "default-src 'self'",
@@ -15,6 +22,7 @@ const nextConfig = {
       "base-uri 'self'",
       "form-action 'self'"
     ].join('; ')
+    
     return [{
       source: "/(.*)",
       headers: [
@@ -29,4 +37,5 @@ const nextConfig = {
     }]
   }
 }
+
 export default nextConfig

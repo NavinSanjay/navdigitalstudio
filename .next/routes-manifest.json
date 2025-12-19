@@ -1,1 +1,217 @@
-{"version":3,"caseSensitive":false,"basePath":"","rewrites":{"beforeFiles":[],"afterFiles":[],"fallback":[]},"redirects":[{"source":"/:path+/","destination":"/:path+","permanent":true,"internal":true,"regex":"^(?:\\/((?:[^\\/]+?)(?:\\/(?:[^\\/]+?))*))\\/$"}],"headers":[{"source":"/(.*)","headers":[{"key":"Content-Security-Policy","value":"default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.posthog.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.posthog.com https://api.resend.com; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"},{"key":"X-Frame-Options","value":"DENY"},{"key":"X-Content-Type-Options","value":"nosniff"},{"key":"Referrer-Policy","value":"strict-origin-when-cross-origin"},{"key":"Permissions-Policy","value":"camera=(), microphone=(), geolocation=()"},{"key":"Cross-Origin-Opener-Policy","value":"same-origin"},{"key":"Cross-Origin-Embedder-Policy","value":"require-corp"}],"regex":"^(?:\\/(.*))(?:\\/)?$"}]}
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.posthog.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.posthog.com https://api.resend.com; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        }
+      ],
+      "regex": "^(?:/(.*))(?:/)?$"
+    }
+  ],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/admin-cms/projects/[id]",
+      "regex": "^/admin\\-cms/projects/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/admin\\-cms/projects/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/admin/faqs/[id]",
+      "regex": "^/api/admin/faqs/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admin/faqs/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/admin/projects/[id]",
+      "regex": "^/api/admin/projects/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admin/projects/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/admin/testimonials/[id]",
+      "regex": "^/api/admin/testimonials/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/admin/testimonials/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/cms-api/faqs/[id]",
+      "regex": "^/cms\\-api/faqs/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/cms\\-api/faqs/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/cms-api/projects/[id]",
+      "regex": "^/cms\\-api/projects/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/cms\\-api/projects/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/cms-api/testimonials/[id]",
+      "regex": "^/cms\\-api/testimonials/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/cms\\-api/testimonials/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin-cms",
+      "regex": "^/admin\\-cms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-cms(?:/)?$"
+    },
+    {
+      "page": "/admin-cms/faqs",
+      "regex": "^/admin\\-cms/faqs(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-cms/faqs(?:/)?$"
+    },
+    {
+      "page": "/admin-cms/projects",
+      "regex": "^/admin\\-cms/projects(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-cms/projects(?:/)?$"
+    },
+    {
+      "page": "/admin-cms/projects/new",
+      "regex": "^/admin\\-cms/projects/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-cms/projects/new(?:/)?$"
+    },
+    {
+      "page": "/admin-cms/testimonials",
+      "regex": "^/admin\\-cms/testimonials(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-cms/testimonials(?:/)?$"
+    },
+    {
+      "page": "/cms-api/faqs",
+      "regex": "^/cms\\-api/faqs(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cms\\-api/faqs(?:/)?$"
+    },
+    {
+      "page": "/cms-api/login",
+      "regex": "^/cms\\-api/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cms\\-api/login(?:/)?$"
+    },
+    {
+      "page": "/cms-api/logout",
+      "regex": "^/cms\\-api/logout(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cms\\-api/logout(?:/)?$"
+    },
+    {
+      "page": "/cms-api/projects",
+      "regex": "^/cms\\-api/projects(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cms\\-api/projects(?:/)?$"
+    },
+    {
+      "page": "/cms-api/seed",
+      "regex": "^/cms\\-api/seed(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cms\\-api/seed(?:/)?$"
+    },
+    {
+      "page": "/cms-api/session",
+      "regex": "^/cms\\-api/session(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cms\\-api/session(?:/)?$"
+    },
+    {
+      "page": "/cms-api/testimonials",
+      "regex": "^/cms\\-api/testimonials(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cms\\-api/testimonials(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}
