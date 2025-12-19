@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
   const data = parsed.data
   if (data.confirmEmail && data.confirmEmail.trim().length > 0) return NextResponse.json({ ok: true })
-  const resend = new Resend(process.env.RESEND_API_KEY || '')
+  
   const to = process.env.EMAIL_TO || 'bynavdigitalstudio@gmail.com'
   const from = process.env.EMAIL_FROM || 'Nav Digital Studio <hello@navdigital.studio>'
   const subject = `New lead — ${data.name}`
@@ -38,9 +38,17 @@ Timeline: ${data.timeline}
 Goals: ${data.goals}
 Issues: ${data.issues || ''}
 Inspiration: ${data.inspiration || ''}`
+
   try {
-    if (process.env.RESEND_API_KEY) { await resend.emails.send({ to, from, subject, text }) }
-    else { console.log('[lead email]', { to, from, subject, text }) }
-  } catch (e) { console.error('Email error', e) }
+    if (process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      await resend.emails.send({ to, from, subject, text })
+    } else {
+      console.log('[lead email - no API key]', { to, from, subject, text })
+    }
+  } catch (e) {
+    console.error('Email error', e)
+  }
+  
   return NextResponse.json({ ok: true })
 }
