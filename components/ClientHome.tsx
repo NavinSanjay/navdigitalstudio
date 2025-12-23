@@ -12,19 +12,40 @@ import { Booking } from '@/components/Booking'
 import { FAQ } from '@/components/FAQ'
 import { Footer } from '@/components/Footer'
 
+type ProjCategory = 'web' | 'ai' | 'hybrid'
+
 type Proj = {
   slug: string
   title: string
+  client?: string
   year: string | number
   role: string
+  featured?: boolean
+  order?: number
+
+  // NEW
+  category: ProjCategory                    // 'web' | 'ai' | 'hybrid'
+  headline_result?: string                  // e.g. "Reporting time cut by 80%"
   stack?: string[]
   summary?: string
-  problem?: { context?: string; constraints?: string[] }
-  approach?: { strategy?: string; key_decisions?: string[] }
-  outcome?: { results?: string[]; metrics?: { label: string; value: string }[] }
-  media: any
+  problem?: {
+    context?: string
+    constraints?: string[]
+  }
+  approach?: {
+    strategy?: string
+    key_decisions?: string[]
+  }
+  outcome?: {
+    results?: string[]
+    metrics?: { label: string; value: string }[]
+  }
+  ai_features?: string[]                    // e.g. ["RAG chatbot", "Forecasting model"]
+  data_sources?: string[]                   // e.g. ["CRM", "Property database"]
+  media: string[] | { type?: string; src: string; alt?: string }[]
   cta?: { label?: string; href?: string }
 }
+
 
 type Testimonial = {
   quote: string

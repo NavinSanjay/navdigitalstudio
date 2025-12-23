@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
 
+type ProjCategory = 'web' | 'ai' | 'hybrid'
+
 export default function NewProjectPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
@@ -27,15 +29,29 @@ export default function NewProjectPage() {
     ctaLabel: 'View site',
     ctaHref: '#',
     featured: false,
-    order: 0
+    order: 0,
+
+    // NEW
+    category: 'web' as ProjCategory,
+    headlineResult: '',
+    aiFeatures: '',
+    dataSources: '',
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value, type } = e.target
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
-              type === 'number' ? parseInt(value) || 0 : value
+      [name]:
+        type === 'checkbox'
+          ? (e.target as HTMLInputElement).checked
+          : type === 'number'
+          ? parseInt(value) || 0
+          : value,
     }))
   }
 
@@ -50,34 +66,66 @@ export default function NewProjectPage() {
         client: formData.client,
         year: formData.year,
         role: formData.role,
-        scope: formData.scope.split(',').map(s => s.trim()).filter(Boolean),
-        stack: formData.stack.split(',').map(s => s.trim()).filter(Boolean),
+        scope: formData.scope
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+        stack: formData.stack
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
         summary: formData.summary,
         problem: {
           context: formData.problemContext,
-          constraints: formData.problemConstraints.split('\n').map(s => s.trim()).filter(Boolean)
+          constraints: formData.problemConstraints
+            .split('\n')
+            .map((s) => s.trim())
+            .filter(Boolean),
         },
         approach: {
           strategy: formData.approachStrategy,
-          key_decisions: formData.approachDecisions.split('\n').map(s => s.trim()).filter(Boolean)
+          key_decisions: formData.approachDecisions
+            .split('\n')
+            .map((s) => s.trim())
+            .filter(Boolean),
         },
         outcome: {
-          results: formData.outcomeResults.split('\n').map(s => s.trim()).filter(Boolean),
-          metrics: formData.outcomeMetrics.split('\n').map(line => {
-            const [label, value] = line.split(':').map(s => s.trim())
-            return label && value ? { label, value } : null
-          }).filter(Boolean)
+          results: formData.outcomeResults
+            .split('\n')
+            .map((s) => s.trim())
+            .filter(Boolean),
+          metrics: formData.outcomeMetrics
+            .split('\n')
+            .map((line) => {
+              const [label, value] = line.split(':').map((s) => s.trim())
+              return label && value ? { label, value } : null
+            })
+            .filter(Boolean),
         },
-        media: formData.mediaUrl ? [{ type: 'image', src: formData.mediaUrl, alt: formData.title }] : [],
+        media: formData.mediaUrl
+          ? [{ type: 'image', src: formData.mediaUrl, alt: formData.title }]
+          : [],
         cta: { label: formData.ctaLabel, href: formData.ctaHref },
         featured: formData.featured,
-        order: formData.order
+        order: formData.order,
+
+        // NEW
+        category: formData.category,
+        headline_result: formData.headlineResult || undefined,
+        ai_features: formData.aiFeatures
+          .split('\n')
+          .map((s) => s.trim())
+          .filter(Boolean),
+        data_sources: formData.dataSources
+          .split('\n')
+          .map((s) => s.trim())
+          .filter(Boolean),
       }
 
       const res = await fetch('/cms-api/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       })
 
       if (res.ok) {
@@ -96,7 +144,10 @@ export default function NewProjectPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-8">
-        <Link href="/admin-cms/projects" className="p-2 rounded-lg hover:bg-white/10 transition">
+        <Link
+          href="/admin-cms/projects"
+          className="p-2 rounded-lg hover:bg-white/10 transition"
+        >
           <ArrowLeft size={20} />
         </Link>
         <div>
@@ -106,9 +157,12 @@ export default function NewProjectPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
+        {/* Title + slug */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Title *</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Title *
+            </label>
             <input
               type="text"
               name="title"
@@ -119,7 +173,9 @@ export default function NewProjectPage() {
             />
           </div>
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Slug *</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Slug *
+            </label>
             <input
               type="text"
               name="slug"
@@ -132,9 +188,27 @@ export default function NewProjectPage() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
+        {/* Category + client/year/role */}
+        <div className="grid md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Client</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Category *
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full px-3 py-3 rounded-lg bg-white/5 border border-white/10 text-sm focus:border-white/30 focus:outline-none"
+            >
+              <option value="web">Website &amp; Brand</option>
+              <option value="ai">AI &amp; Data System</option>
+              <option value="hybrid">Hybrid: Web + AI</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Client
+            </label>
             <input
               type="text"
               name="client"
@@ -144,7 +218,9 @@ export default function NewProjectPage() {
             />
           </div>
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Year *</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Year *
+            </label>
             <input
               type="number"
               name="year"
@@ -155,7 +231,9 @@ export default function NewProjectPage() {
             />
           </div>
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Role *</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Role *
+            </label>
             <input
               type="text"
               name="role"
@@ -168,9 +246,27 @@ export default function NewProjectPage() {
           </div>
         </div>
 
+        {/* Headline result */}
+        <div>
+          <label className="block text-sm text-neutral-400 mb-2">
+            Headline result (optional)
+          </label>
+          <input
+            type="text"
+            name="headlineResult"
+            value={formData.headlineResult}
+            onChange={handleChange}
+            placeholder="e.g. Reporting time cut by 80%"
+            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
+          />
+        </div>
+
+        {/* Scope / stack */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Scope (comma separated)</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Scope (comma separated)
+            </label>
             <input
               type="text"
               name="scope"
@@ -181,20 +277,25 @@ export default function NewProjectPage() {
             />
           </div>
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Tech Stack (comma separated)</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Tech Stack (comma separated)
+            </label>
             <input
               type="text"
               name="stack"
               value={formData.stack}
               onChange={handleChange}
-              placeholder="Next.js, Tailwind, Stripe"
+              placeholder="Next.js, Tailwind, Python"
               className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
             />
           </div>
         </div>
 
+        {/* Summary */}
         <div>
-          <label className="block text-sm text-neutral-400 mb-2">Summary</label>
+          <label className="block text-sm text-neutral-400 mb-2">
+            Summary
+          </label>
           <textarea
             name="summary"
             value={formData.summary}
@@ -204,11 +305,47 @@ export default function NewProjectPage() {
           />
         </div>
 
+        {/* AI & Data section */}
+        <div className="border-t border-white/10 pt-6">
+          <h3 className="font-medium mb-4">AI &amp; Data (optional)</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs text-neutral-400 mb-2">
+                AI Features (one per line)
+              </label>
+              <textarea
+                name="aiFeatures"
+                value={formData.aiFeatures}
+                onChange={handleChange}
+                rows={3}
+                placeholder={`RAG chatbot on internal docs\nForecasting model for traffic\nAutomated reporting`}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-neutral-400 mb-2">
+                Data Sources (one per line)
+              </label>
+              <textarea
+                name="dataSources"
+                value={formData.dataSources}
+                onChange={handleChange}
+                rows={3}
+                placeholder={`Internal CRM\nProperty portfolio database\nWeather API`}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Problem */}
         <div className="border-t border-white/10 pt-6">
           <h3 className="font-medium mb-4">Problem</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Context</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Context
+              </label>
               <textarea
                 name="problemContext"
                 value={formData.problemContext}
@@ -218,7 +355,9 @@ export default function NewProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Constraints (one per line)</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Constraints (one per line)
+              </label>
               <textarea
                 name="problemConstraints"
                 value={formData.problemConstraints}
@@ -231,11 +370,14 @@ export default function NewProjectPage() {
           </div>
         </div>
 
+        {/* Approach */}
         <div className="border-t border-white/10 pt-6">
           <h3 className="font-medium mb-4">Approach</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Strategy</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Strategy
+              </label>
               <textarea
                 name="approachStrategy"
                 value={formData.approachStrategy}
@@ -245,7 +387,9 @@ export default function NewProjectPage() {
               />
             </div>
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Key Decisions (one per line)</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Key Decisions (one per line)
+              </label>
               <textarea
                 name="approachDecisions"
                 value={formData.approachDecisions}
@@ -258,39 +402,47 @@ export default function NewProjectPage() {
           </div>
         </div>
 
+        {/* Outcome */}
         <div className="border-t border-white/10 pt-6">
           <h3 className="font-medium mb-4">Outcome</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Results (one per line)</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Results (one per line)
+              </label>
               <textarea
                 name="outcomeResults"
                 value={formData.outcomeResults}
                 onChange={handleChange}
                 rows={3}
-                placeholder="Increased conversion rate\nReduced bounce rate\nImproved load time"
+                placeholder="Increased conversion rate\nReduced reporting time\nImproved decision speed"
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Metrics (format: Label: Value, one per line)</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Metrics (format: Label: Value, one per line)
+              </label>
               <textarea
                 name="outcomeMetrics"
                 value={formData.outcomeMetrics}
                 onChange={handleChange}
                 rows={3}
-                placeholder="Conversion: +45%\nLoad time: -60%\nBounce rate: -30%"
+                placeholder="Conversion: +45%\nReporting time: -80%\nForecast error: -25%"
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
               />
             </div>
           </div>
         </div>
 
+        {/* Media & CTA */}
         <div className="border-t border-white/10 pt-6">
-          <h3 className="font-medium mb-4">Media & CTA</h3>
+          <h3 className="font-medium mb-4">Media &amp; CTA</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Cover Image URL</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Cover Image URL
+              </label>
               <input
                 type="text"
                 name="mediaUrl"
@@ -302,7 +454,9 @@ export default function NewProjectPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm text-neutral-400 mb-2">CTA Label</label>
+                <label className="block text-sm text-neutral-400 mb-2">
+                  CTA Label
+                </label>
                 <input
                   type="text"
                   name="ctaLabel"
@@ -312,7 +466,9 @@ export default function NewProjectPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm text-neutral-400 mb-2">CTA Link</label>
+                <label className="block text-sm text-neutral-400 mb-2">
+                  CTA Link
+                </label>
                 <input
                   type="text"
                   name="ctaHref"
@@ -325,6 +481,7 @@ export default function NewProjectPage() {
           </div>
         </div>
 
+        {/* Featured + order */}
         <div className="border-t border-white/10 pt-6 flex items-center gap-6">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
@@ -348,6 +505,7 @@ export default function NewProjectPage() {
           </div>
         </div>
 
+        {/* Actions */}
         <div className="flex gap-4 pt-4">
           <button
             type="submit"

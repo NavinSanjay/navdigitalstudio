@@ -120,9 +120,9 @@ export function Hero({ introDone }: HeroProps) {
           }}
           className="mt-8 md:mt-12 text-lg md:text-xl text-neutral-300 max-w-2xl leading-relaxed"
         >
-          We build digital systems and websites that fit your business.
-          Improving what already works and removing what doesn’t, so your
-          business runs easier.
+          We build intelligent digital systems and websites that fit your business.
+          We improve what already works and remove what doesn’t, so your business runs smoother —  
+          with AI, data, and design working together.
         </motion.p>
 
         {/* Stats row */}

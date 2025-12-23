@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 
+type ProjCategory = 'web' | 'ai' | 'hybrid'
+
 interface Project {
   _id: string
   slug: string
@@ -22,13 +24,24 @@ interface Project {
   cta: { label: string; href: string }
   featured: boolean
   order: number
+
+  // NEW (optional in DB)
+  category?: ProjCategory
+  headline_result?: string
+  ai_features?: string[]
+  data_sources?: string[]
 }
 
-export default function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
+export default function EditProjectPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
   const { id } = use(params)
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+
   const [formData, setFormData] = useState({
     slug: '',
     title: '',
@@ -48,11 +61,18 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
     ctaLabel: 'View site',
     ctaHref: '#',
     featured: false,
-    order: 0
+    order: 0,
+
+    // NEW
+    category: 'web' as ProjCategory,
+    headlineResult: '',
+    aiFeatures: '',
+    dataSources: '',
   })
 
   useEffect(() => {
     fetchProject()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const fetchProject = async () => {
@@ -70,16 +90,26 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           stack: project.stack?.join(', ') || '',
           summary: project.summary || '',
           problemContext: project.problem?.context || '',
-          problemConstraints: project.problem?.constraints?.join('\n') || '',
+          problemConstraints:
+            project.problem?.constraints?.join('\n') || '',
           approachStrategy: project.approach?.strategy || '',
-          approachDecisions: project.approach?.key_decisions?.join('\n') || '',
+          approachDecisions:
+            project.approach?.key_decisions?.join('\n') || '',
           outcomeResults: project.outcome?.results?.join('\n') || '',
-          outcomeMetrics: project.outcome?.metrics?.map(m => `${m.label}: ${m.value}`).join('\n') || '',
+          outcomeMetrics:
+            project.outcome?.metrics
+              ?.map((m) => `${m.label}: ${m.value}`)
+              .join('\n') || '',
           mediaUrl: project.media?.[0]?.src || '',
           ctaLabel: project.cta?.label || 'View site',
           ctaHref: project.cta?.href || '#',
           featured: project.featured || false,
-          order: project.order || 0
+          order: project.order || 0,
+
+          category: project.category ?? 'web',
+          headlineResult: project.headline_result || '',
+          aiFeatures: (project.ai_features || []).join('\n'),
+          dataSources: (project.data_sources || []).join('\n'),
         })
       }
     } catch (e) {
@@ -89,12 +119,20 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value, type } = e.target
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
-              type === 'number' ? parseInt(value) || 0 : value
+      [name]:
+        type === 'checkbox'
+          ? (e.target as HTMLInputElement).checked
+          : type === 'number'
+          ? parseInt(value) || 0
+          : value,
     }))
   }
 
@@ -109,34 +147,65 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
         client: formData.client,
         year: formData.year,
         role: formData.role,
-        scope: formData.scope.split(',').map(s => s.trim()).filter(Boolean),
-        stack: formData.stack.split(',').map(s => s.trim()).filter(Boolean),
+        scope: formData.scope
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+        stack: formData.stack
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
         summary: formData.summary,
         problem: {
           context: formData.problemContext,
-          constraints: formData.problemConstraints.split('\n').map(s => s.trim()).filter(Boolean)
+          constraints: formData.problemConstraints
+            .split('\n')
+            .map((s) => s.trim())
+            .filter(Boolean),
         },
         approach: {
           strategy: formData.approachStrategy,
-          key_decisions: formData.approachDecisions.split('\n').map(s => s.trim()).filter(Boolean)
+          key_decisions: formData.approachDecisions
+            .split('\n')
+            .map((s) => s.trim())
+            .filter(Boolean),
         },
         outcome: {
-          results: formData.outcomeResults.split('\n').map(s => s.trim()).filter(Boolean),
-          metrics: formData.outcomeMetrics.split('\n').map(line => {
-            const [label, value] = line.split(':').map(s => s.trim())
-            return label && value ? { label, value } : null
-          }).filter(Boolean)
+          results: formData.outcomeResults
+            .split('\n')
+            .map((s) => s.trim())
+            .filter(Boolean),
+          metrics: formData.outcomeMetrics
+            .split('\n')
+            .map((line) => {
+              const [label, value] = line.split(':').map((s) => s.trim())
+              return label && value ? { label, value } : null
+            })
+            .filter(Boolean),
         },
-        media: formData.mediaUrl ? [{ type: 'image', src: formData.mediaUrl, alt: formData.title }] : [],
+        media: formData.mediaUrl
+          ? [{ type: 'image', src: formData.mediaUrl, alt: formData.title }]
+          : [],
         cta: { label: formData.ctaLabel, href: formData.ctaHref },
         featured: formData.featured,
-        order: formData.order
+        order: formData.order,
+
+        category: formData.category,
+        headline_result: formData.headlineResult || undefined,
+        ai_features: formData.aiFeatures
+          .split('\n')
+          .map((s) => s.trim())
+          .filter(Boolean),
+        data_sources: formData.dataSources
+          .split('\n')
+          .map((s) => s.trim())
+          .filter(Boolean),
       }
 
       const res = await fetch(`/cms-api/projects/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       })
 
       if (res.ok) {
@@ -170,7 +239,10 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
     <div>
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <Link href="/admin-cms/projects" className="p-2 rounded-lg hover:bg-white/10 transition">
+          <Link
+            href="/admin-cms/projects"
+            className="p-2 rounded-lg hover:bg-white/10 transition"
+          >
             <ArrowLeft size={20} />
           </Link>
           <div>
@@ -188,9 +260,12 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
+        {/* Title + slug */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Title *</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Title *
+            </label>
             <input
               type="text"
               name="title"
@@ -201,7 +276,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             />
           </div>
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Slug *</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Slug *
+            </label>
             <input
               type="text"
               name="slug"
@@ -213,9 +290,27 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
+        {/* Category + client/year/role */}
+        <div className="grid md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Client</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Category *
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full px-3 py-3 rounded-lg bg-white/5 border border-white/10 text-sm focus:border-white/30 focus:outline-none"
+            >
+              <option value="web">Website &amp; Brand</option>
+              <option value="ai">AI &amp; Data System</option>
+              <option value="hybrid">Hybrid: Web + AI</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Client
+            </label>
             <input
               type="text"
               name="client"
@@ -225,7 +320,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             />
           </div>
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Year *</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Year *
+            </label>
             <input
               type="number"
               name="year"
@@ -236,7 +333,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             />
           </div>
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Role *</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Role *
+            </label>
             <input
               type="text"
               name="role"
@@ -248,9 +347,27 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Headline result */}
+        <div>
+          <label className="block text-sm text-neutral-400 mb-2">
+            Headline result (optional)
+          </label>
+          <input
+            type="text"
+            name="headlineResult"
+            value={formData.headlineResult}
+            onChange={handleChange}
+            placeholder="e.g. Reporting time cut by 80%"
+            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
+          />
+        </div>
+
+        {/* Scope / stack */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Scope (comma separated)</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Scope (comma separated)
+            </label>
             <input
               type="text"
               name="scope"
@@ -260,7 +377,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             />
           </div>
           <div>
-            <label className="block text-sm text-neutral-400 mb-2">Tech Stack (comma separated)</label>
+            <label className="block text-sm text-neutral-400 mb-2">
+              Tech Stack (comma separated)
+            </label>
             <input
               type="text"
               name="stack"
@@ -271,8 +390,11 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Summary */}
         <div>
-          <label className="block text-sm text-neutral-400 mb-2">Summary</label>
+          <label className="block text-sm text-neutral-400 mb-2">
+            Summary
+          </label>
           <textarea
             name="summary"
             value={formData.summary}
@@ -282,11 +404,45 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           />
         </div>
 
+        {/* AI & Data section */}
+        <div className="border-t border-white/10 pt-6">
+          <h3 className="font-medium mb-4">AI &amp; Data (optional)</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs text-neutral-400 mb-2">
+                AI Features (one per line)
+              </label>
+              <textarea
+                name="aiFeatures"
+                value={formData.aiFeatures}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-neutral-400 mb-2">
+                Data Sources (one per line)
+              </label>
+              <textarea
+                name="dataSources"
+                value={formData.dataSources}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Problem */}
         <div className="border-t border-white/10 pt-6">
           <h3 className="font-medium mb-4">Problem</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Context</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Context
+              </label>
               <textarea
                 name="problemContext"
                 value={formData.problemContext}
@@ -296,7 +452,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
               />
             </div>
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Constraints (one per line)</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Constraints (one per line)
+              </label>
               <textarea
                 name="problemConstraints"
                 value={formData.problemConstraints}
@@ -308,11 +466,14 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Approach */}
         <div className="border-t border-white/10 pt-6">
           <h3 className="font-medium mb-4">Approach</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Strategy</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Strategy
+              </label>
               <textarea
                 name="approachStrategy"
                 value={formData.approachStrategy}
@@ -322,7 +483,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
               />
             </div>
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Key Decisions (one per line)</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Key Decisions (one per line)
+              </label>
               <textarea
                 name="approachDecisions"
                 value={formData.approachDecisions}
@@ -334,11 +497,14 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Outcome */}
         <div className="border-t border-white/10 pt-6">
           <h3 className="font-medium mb-4">Outcome</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Results (one per line)</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Results (one per line)
+              </label>
               <textarea
                 name="outcomeResults"
                 value={formData.outcomeResults}
@@ -348,7 +514,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
               />
             </div>
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Metrics (format: Label: Value, one per line)</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Metrics (format: Label: Value, one per line)
+              </label>
               <textarea
                 name="outcomeMetrics"
                 value={formData.outcomeMetrics}
@@ -360,11 +528,14 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Media & CTA */}
         <div className="border-t border-white/10 pt-6">
-          <h3 className="font-medium mb-4">Media & CTA</h3>
+          <h3 className="font-medium mb-4">Media &amp; CTA</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-neutral-400 mb-2">Cover Image URL</label>
+              <label className="block text-sm text-neutral-400 mb-2">
+                Cover Image URL
+              </label>
               <input
                 type="text"
                 name="mediaUrl"
@@ -375,7 +546,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm text-neutral-400 mb-2">CTA Label</label>
+                <label className="block text-sm text-neutral-400 mb-2">
+                  CTA Label
+                </label>
                 <input
                   type="text"
                   name="ctaLabel"
@@ -385,7 +558,9 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
                 />
               </div>
               <div>
-                <label className="block text-sm text-neutral-400 mb-2">CTA Link</label>
+                <label className="block text-sm text-neutral-400 mb-2">
+                  CTA Link
+                </label>
                 <input
                   type="text"
                   name="ctaHref"
@@ -398,6 +573,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Featured + order */}
         <div className="border-t border-white/10 pt-6 flex items-center gap-6">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
@@ -421,6 +597,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
+        {/* Actions */}
         <div className="flex gap-4 pt-4">
           <button
             type="submit"

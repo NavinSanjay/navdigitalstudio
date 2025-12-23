@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Plus, Pencil, Trash2, Eye, GripVertical } from 'lucide-react'
 import Link from 'next/link'
 
+type ProjCategory = 'web' | 'ai' | 'hybrid'
+
 interface Project {
   _id: string
   slug: string
@@ -13,6 +15,10 @@ interface Project {
   role: string
   featured: boolean
   order: number
+
+  // NEW optional fields
+  category?: ProjCategory
+  headline_result?: string
 }
 
 export default function ProjectsPage() {
@@ -39,7 +45,7 @@ export default function ProjectsPage() {
     if (!confirm('Delete this project? This cannot be undone.')) return
     try {
       await fetch(`/cms-api/projects/${id}`, { method: 'DELETE' })
-      setProjects(projects.filter(p => p._id !== id))
+      setProjects((prev) => prev.filter((p) => p._id !== id))
     } catch (e) {
       alert('Failed to delete project')
     }
@@ -49,12 +55,21 @@ export default function ProjectsPage() {
     return <div className="animate-pulse">Loading projects...</div>
   }
 
+  const categoryLabel = (category?: ProjCategory) => {
+    if (!category) return null
+    if (category === 'web') return 'Website & Brand'
+    if (category === 'ai') return 'AI & Data'
+    return 'Hybrid'
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-semibold">Projects</h1>
-          <p className="text-neutral-400 mt-1">Manage your portfolio case studies</p>
+          <p className="text-neutral-400 mt-1">
+            Manage your portfolio case studies
+          </p>
         </div>
         <Link
           href="/admin-cms/projects/new"
@@ -69,7 +84,9 @@ export default function ProjectsPage() {
       {projects.length === 0 ? (
         <div className="text-center py-16 text-neutral-400">
           <p>No projects yet.</p>
-          <p className="mt-2">Click "Seed Data" on the dashboard or create a new project.</p>
+          <p className="mt-2">
+            Click &quot;Seed Data&quot; on the dashboard or create a new project.
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -85,12 +102,24 @@ export default function ProjectsPage() {
                 <div className="flex items-center gap-3">
                   <h3 className="font-medium truncate">{project.title}</h3>
                   {project.featured && (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-white/10">Featured</span>
+                    <span className="px-2 py-0.5 text-xs rounded-full bg-white/10">
+                      Featured
+                    </span>
+                  )}
+                  {project.category && (
+                    <span className="px-2 py-0.5 text-[10px] rounded-full bg-white/5 text-neutral-300 uppercase tracking-[0.16em]">
+                      {categoryLabel(project.category)}
+                    </span>
                   )}
                 </div>
                 <p className="text-sm text-neutral-400 mt-1">
                   {project.year} • {project.role}
                 </p>
+                {project.headline_result && (
+                  <p className="text-xs text-green-400 mt-1">
+                    {project.headline_result}
+                  </p>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <Link

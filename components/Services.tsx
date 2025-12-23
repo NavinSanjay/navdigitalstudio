@@ -4,27 +4,42 @@ import { Compass, Palette, Cpu, ArrowRight, Sparkles } from 'lucide-react'
 import { useRef } from 'react'
 
 const services = [
-  { 
+  {
     icon: Compass,
-    title: 'Clarity & Direction', 
-    description: 'We take the time to understand your business, your customers, and your existing setup. Decisions are intentional and the final solution actually fits.',
-    details: ['Understanding your workflow', 'Structure & content planning', 'User journeys that make sense'],
-    accent: 'from-white to-[#c9ae75]'
+    title: 'Strategy & Clarity',
+    description:
+      'We map how your business actually works today—systems, data, customer journeys—so we can design solutions that plug into reality, not theory.',
+    details: [
+      'Discovery sessions on goals, constraints, and workflows',
+      'Mapping where data lives and how it moves',
+      'Picking the right mix of web, AI, and automation',
+    ],
+    accent: 'from-white to-[#c9ae75]',
   },
-  { 
+  {
     icon: Palette,
-    title: 'Design & Implementation', 
-    description: 'Clean, thoughtful websites built to feel effortless to use and simple to maintain. No templates or unnecessary complexity.',
-    details: ['Visual & interaction design', 'Responsive build', 'Custom CMS setup'],
-    accent: 'from-emerald-500/20 to-cyan-500/20'
+    title: 'Web & Product Experience',
+    description:
+      'Custom websites and interfaces that feel considered, fast, and easy to use—built to showcase your brand and make complex systems feel simple.',
+    details: [
+      'Brand-aligned web & product UI',
+      'Responsive builds with clean, maintainable code',
+      'CMS setups your team can actually use',
+    ],
+    accent: 'from-emerald-500/20 to-cyan-500/20',
   },
-  { 
+  {
     icon: Cpu,
-    title: 'Systems & Support', 
-    description: 'Practical systems that reduce manual work and support growth. Adding real value to your business.',
-    details: ['Integrations & automations', 'Analytics & insights', 'Performance & reliability'],
-    accent: 'from-orange-500/20 to-rose-500/20'
-  }
+    title: 'AI & Data Systems',
+    description:
+      'AI and analytics that run on your data—chatbots, dashboards, and automations that remove manual work and support better decisions.',
+    details: [
+      'Private chatbots on your documents and knowledge',
+      'Data pipelines, warehouses, and BI dashboards',
+      'Predictive models and automations embedded into your tools',
+    ],
+    accent: 'from-orange-500/20 to-rose-500/20',
+  },
 ]
 
 // Diagonal scrolling text component - increased opacity
@@ -39,13 +54,7 @@ function DiagonalScrollText() {
   const x2 = useTransform(scrollYProgress, [0, 1], [-200, 200])
   const x3 = useTransform(scrollYProgress, [0, 1], [100, -300])
 
-  const lines = [
-    'NAV',
-    'DIGITAL',
-    'STUDIO',
-    // 'DESIGN & BUILD',
-    // 'SYSTEMS & GROWTH',
-  ]
+  const lines = ['NAV', 'DIGITAL', 'STUDIO']
 
   return (
     <div
@@ -140,14 +149,12 @@ export function Services() {
             className="relative"
           >
             <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-              <span className="relative inline-block">
-                End-to-end
-              </span>{' '}
-              support.
+              <span className="relative inline-block">Web, AI,</span>{' '}
+              systems that
               <br />
-              <span className="text-neutral-600">Built around</span>{' '}
+              <span className="text-neutral-600">work together</span>{' '}
               <span className="relative">
-                <span className="relative z-10">you.</span>
+                <span className="relative z-10">for you.</span>
                 <motion.span
                   className="absolute inset-0 bg-gradient-to-r from-white/20 to-white/5 blur-xl -z-10"
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -167,18 +174,12 @@ export function Services() {
           >
             <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-white via-white/50 to-white/40 rounded-full" />
             <p className="text-lg md:text-xl text-neutral-300 leading-relaxed pl-6 max-w-2xl">
-              Every project is approached{' '}
-              <span className="relative inline-block">
-                <span className="relative z-10 text-white font-medium">
-                  holistically
-                </span>
-                <span className="absolute bottom-0 left-0 right-0 h-[6px] bg-white/10 -rotate-1" />
-              </span>{' '}
-              — from understanding how you work today to building systems that
-              support where you're going.
+              Whether you need a website, an internal AI assistant, or a full
+              data platform, everything is designed as one connected
+              system—not a pile of separate tools.
               <span className="block mt-4 text-neutral-500 text-base italic">
-                No unnecessary layers. No hand-offs. Just clear thinking and
-                considered execution.
+                Strategy, interface, and implementation handled end‑to‑end so
+                you don’t have to coordinate five different vendors.
               </span>
             </p>
           </motion.div>
@@ -196,11 +197,6 @@ export function Services() {
               className="group relative"
               style={{ perspective: '1000px' }}
             >
-              {/* Card glow effect */}
-              {/* <div
-                className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${s.accent} opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500`}
-              /> */}
-
               <div className="relative h-full p-8 rounded-3xl border border-white/10  bg-black/70 backdrop-blur-sm ">
                 {/* Animated corner accent */}
                 <motion.div
@@ -228,9 +224,6 @@ export function Services() {
                   >
                     <s.icon size={28} className="text-white" />
                   </motion.div>
-                  {/* <div
-                    className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${s.accent} blur-2xl opacity-50 group-hover:opacity-80 transition-opacity`}
-                  /> */}
                 </div>
 
                 {/* Content */}
@@ -295,7 +288,7 @@ export function Services() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 }}
                 >
-                  Let's talk it through.
+                  Bring your next system to life.
                 </motion.h3>
                 <motion.p
                   className="text-neutral-400 text-lg max-w-md"
@@ -303,8 +296,9 @@ export function Services() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7 }}
                 >
-                  A short conversation to understand your needs and see if it's
-                  a good fit.
+                  A short call to look at your current setup and explore whether
+                  a new site, AI assistant, or data platform will move the
+                  needle most.
                 </motion.p>
               </div>
               <motion.a
