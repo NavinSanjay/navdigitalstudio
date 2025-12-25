@@ -49,6 +49,18 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
     phaseRef.current = phase
   }, [phase])
 
+  // Idle floating animation for flowers (no rotation)
+  useEffect(() => {
+    leftFlowerControls.start({
+      y: [0, -10, 0],
+      transition: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
+    })
+    rightFlowerControls.start({
+      y: [0, -10, 0],
+      transition: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
+    })
+  }, [leftFlowerControls, rightFlowerControls])
+
   useEffect(() => {
     const handleScroll = (e: WheelEvent) => {
       if (scrollCooldown.current || phaseRef.current === 'done') return
@@ -94,30 +106,41 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
 
   const startFlower = () => {
     setPhase('flower')
+    setTextFall(true)
+
+    // Bold exit for flowers (no rotation)
     leftFlowerControls.start({
       x: '-150%',
-      transition: { duration: isMobile ? 3.2 : 2 },
+      scale: [1, 1.3, 0.9],
+      opacity: [1, 1, 0],
+      transition: {
+        duration: isMobile ? 2.2 : 1.4,
+        ease: [0.16, 1, 0.3, 1],
+      },
     })
     rightFlowerControls.start({
       x: '150%',
-      transition: { duration: isMobile ? 3.2 : 2 },
+      scale: [1, 1.3, 0.9],
+      opacity: [1, 1, 0],
+      transition: {
+        duration: isMobile ? 2.2 : 1.4,
+        ease: [0.16, 1, 0.3, 1],
+      },
     })
-    setTextFall(true)
-    setTimeout(() => setShowText(true), isMobile ? 1000 : 500)
-    setTimeout(() => fadeInText(), isMobile ? 1200 : 700)
+
+    setTimeout(() => setShowText(true), isMobile ? 600 : 400)
+    setTimeout(() => fadeInText(), isMobile ? 900 : 650)
   }
 
   const startTextFade = () => {
     setPhase('text')
 
-    // fade central copy up and out
     textControls.start({
       opacity: 0,
       y: -50,
       transition: { duration: isMobile ? 1.0 : 0.6 },
     })
 
-    // fade entire intro to black, then signal completion
     containerControls
       .start({
         opacity: 0,
@@ -200,7 +223,6 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
             </AnimatePresence>
           </>
         ) : (
-          // Desktop
           <motion.div
             className="absolute inset-0 flex items-center justify-between px-20 text-7xl font-bold text-white z-10"
             initial={{ opacity: 1, y: 0 }}
@@ -250,24 +272,61 @@ export default function Start({ onComplete }: { onComplete: () => void }) {
           </motion.div>
         )}
 
+        {/* Portal / spotlight */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={
+            textFall
+              ? { scale: [0, 1.4, 1], opacity: [0, 1, 1] }
+              : { scale: 0, opacity: 0 }
+          }
+          transition={{
+            duration: isMobile ? 1.4 : 1.0,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          <div
+            className="w-[60vmin] h-[60vmin] rounded-full"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(0,0,0,0) 70%)',
+              boxShadow: '0 0 140px rgba(255,255,255,0.25)',
+            }}
+          />
+        </motion.div>
+
+        {/* Left flower */}
         <motion.img
-          src="/images/left_flower.png"
+          src="/images/left_flower3.png"
           alt="Left Flower"
-          className="absolute top-30 left-30 w-[80%] md:w-[35%] -translate-y-1/2 -translate-x-1/2 z-10"
+          className="absolute top-30 left-30 w-[80%] md:w-[35%] -translate-y-1/2 -translate-x-1/2 z-10 cursor-pointer"
           animate={leftFlowerControls}
           initial={{ x: '0%' }}
+          whileHover={
+            !isMobile
+              ? { scale: 1.05, y: -6, transition: { duration: 0.3 } }
+              : undefined
+          }
         />
+
+        {/* Right flower */}
         <motion.img
-          src="/images/right_flower.png"
+          src="/images/right_flower3.png"
           alt="Right Flower"
-          className="absolute top-30 right-30 w-[80%] md:w-[35%] -translate-y-1/2 -translate-x-1/2 z-10"
+          className="absolute top-30 right-30 w-[80%] md:w-[35%] -translate-y-1/2 -translate-x-1/2 z-10 cursor-pointer"
           animate={rightFlowerControls}
           initial={{ x: '0%' }}
+          whileHover={
+            !isMobile
+              ? { scale: 1.05, y: -6, transition: { duration: 0.3 } }
+              : undefined
+          }
         />
 
         {showText && (
           <motion.div
-            className="z-0 max-w-2xl"
+            className="z-20 max-w-2xl"
             initial={{ opacity: 0, y: 20 }}
             animate={textControls}
           >
