@@ -9,6 +9,8 @@ const Schema = z.object({
   email: z.string().email(),
   company: z.string().optional(),
   website: z.string().optional(),
+  projectType: z.string().min(1),          // NEW
+  brandingPr: z.string().min(1),           // NEW: e.g. "Yes", "No", "Not sure"
   budget: z.string().min(1),
   timeline: z.string().min(1),
   goals: z.string().min(1),
@@ -47,6 +49,8 @@ export async function POST(req: NextRequest) {
       from: fromStudio,
       name: data.name,
       email: data.email,
+      projectType: data.projectType,
+      brandingPr: data.brandingPr,
     })
     return NextResponse.json({ ok: true })
   }
@@ -54,43 +58,54 @@ export async function POST(req: NextRequest) {
   const resend = new Resend(resendApiKey)
 
   const studioSubject = `New lead — ${data.name}`
+
   const studioText = `Lead
 Name: ${data.name}
 Email: ${data.email}
 Company: ${data.company || ''}
 Website: ${data.website || ''}
+
+Project type: ${data.projectType}
+Branding & publicity: ${data.brandingPr}
+
 Budget: ${data.budget}
 Timeline: ${data.timeline}
-Goals: ${data.goals}
-Issues: ${data.issues || ''}
-Inspiration: ${data.inspiration || ''}`
+
+Goals:
+${data.goals}
+
+Issues:
+${data.issues || ''}
+
+Inspiration:
+${data.inspiration || ''}`
 
   const userSubject = 'We’ve received your project brief'
   const userHtml = `
     <p>Hi ${data.name},</p>
-    <p>Thanks for sharing your project brief with <strong>Nav Digital Studio</strong> — it’s now safely in our system.</p>
-    <p>We’ll review the details and get back to you within 1–2 business days with next steps and a proposed time to chat.</p>
-    <p>If you need to add anything in the meantime, just reply to this email and we’ll include it in our review.</p>
+    <p>Thanks for sharing your project brief with <strong>Nav Digital Studio</strong> — it’s now safely in the queue.</p>
+    <p>We’ll review the details (including your project type and whether you’re interested in branding & publicity support) and get back to you within 1–2 business days with next steps and a proposed time to chat.</p>
+    <p>If you need to add anything in the meantime, just reply to this email and it will be included in the review.</p>
     <p>Talk soon,<br/>Navin<br/>Nav Digital Studio</p>
   `
 
   try {
-    // 1) Email to you
+    // 1) Email to studio
     await resend.emails.send({
       to: toStudio,
       from: fromStudio,
       subject: studioSubject,
       text: studioText,
-      replyTo: data.email, // reply goes to the lead
+      replyTo: data.email,
     })
 
-    // 2) Confirmation email to the user
+    // 2) Confirmation email to user
     await resend.emails.send({
       to: data.email,
       from: fromStudio,
       subject: userSubject,
       html: userHtml,
-      replyTo: toStudio, // replies come back to your inbox
+      replyTo: toStudio,
     })
 
     return NextResponse.json({ ok: true })
@@ -98,7 +113,7 @@ Inspiration: ${data.inspiration || ''}`
     console.error('Email error (lead + confirmation)', e)
     return NextResponse.json(
       { error: 'Email failed, please try again later.' },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }

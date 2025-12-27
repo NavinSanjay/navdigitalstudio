@@ -1,6 +1,6 @@
 'use client'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { Compass, Palette, Cpu, ArrowRight, Sparkles } from 'lucide-react'
+import { Compass, Palette, Cpu, ArrowRight, Sparkles, Megaphone } from 'lucide-react'
 import { useRef } from 'react'
 
 const services = [
@@ -14,7 +14,6 @@ const services = [
       'Mapping where data lives and how it moves',
       'Picking the right mix of web, AI, and automation',
     ],
-    accent: 'from-white to-[#c9ae75]',
   },
   {
     icon: Palette,
@@ -26,7 +25,6 @@ const services = [
       'Responsive builds with clean, maintainable code',
       'CMS setups your team can actually use',
     ],
-    accent: 'from-emerald-500/20 to-cyan-500/20',
   },
   {
     icon: Cpu,
@@ -38,11 +36,21 @@ const services = [
       'Data pipelines, warehouses, and BI dashboards',
       'Predictive models and automations embedded into your tools',
     ],
-    accent: 'from-orange-500/20 to-rose-500/20',
+  },
+  {
+    icon: Megaphone,
+    title: 'Branding & Publicity',
+    description:
+      'Through a studio partnership with Maraschino Publicity, your brand, story, and campaigns can be developed alongside the systems that power them.',
+    details: [
+      'Brand strategy, messaging, and visual identity',
+      'Launch and publicity campaigns aligned with your product',
+      'Press, creator, and community moments that feed your funnel',
+    ],
   },
 ]
 
-// Diagonal scrolling text component - increased opacity
+// Diagonal scrolling text component
 function DiagonalScrollText() {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -61,7 +69,6 @@ function DiagonalScrollText() {
       ref={ref}
       className="absolute inset-0 overflow-hidden pointer-events-none z-0"
     >
-      {/* Diagonal text rows with visible opacity */}
       <div className="absolute inset-0 -rotate-12 scale-100 flex flex-col justify-center gap-16 opacity-[0.6]">
         <motion.div style={{ x: x1 }} className="flex gap-16 whitespace-nowrap">
           {[...Array(4)].map((_, i) => (
@@ -112,14 +119,14 @@ export function Services() {
       ref={sectionRef}
       className="relative py-24 md:py-32 bg-black overflow-hidden"
     >
-      {/* Diagonal scrolling background text - behind everything */}
+      {/* Background text */}
       <DiagonalScrollText />
 
-      {/* Gradient overlays on top of text */}
+      {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-[1]" />
       <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black pointer-events-none z-[1]" />
 
-      {/* Main content above everything */}
+      {/* Main content */}
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         {/* Section header */}
         <div className="max-w-4xl mb-20">
@@ -175,18 +182,19 @@ export function Services() {
             <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-white via-white/50 to-white/40 rounded-full" />
             <p className="text-lg md:text-xl text-neutral-300 leading-relaxed pl-6 max-w-2xl">
               Whether you need a website, an internal AI assistant, or a full
-              data platform, everything is designed as one connected
-              system—not a pile of separate tools.
+              data platform, everything is designed as one connected system—not
+              a pile of separate tools.
               <span className="block mt-4 text-neutral-500 text-base italic">
-                Strategy, interface, and implementation handled end‑to‑end so
-                you don’t have to coordinate five different vendors.
+                Branding and publicity are handled in partnership with
+                Maraschino Publicity, so the story you tell in public matches
+                the systems that sit behind it.
               </span>
             </p>
           </motion.div>
         </div>
 
         {/* Services grid */}
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {services.map((s, i) => (
             <motion.div
               key={i}
@@ -197,7 +205,7 @@ export function Services() {
               className="group relative"
               style={{ perspective: '1000px' }}
             >
-              <div className="relative h-full p-8 rounded-3xl border border-white/10  bg-black/70 backdrop-blur-sm ">
+              <div className="relative h-full p-8 rounded-3xl border border-white/10 bg-black/70 backdrop-blur-sm">
                 {/* Animated corner accent */}
                 <motion.div
                   className="absolute top-0 right-0 w-20 h-20"
@@ -296,9 +304,9 @@ export function Services() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7 }}
                 >
-                  A short call to look at your current setup and explore whether
-                  a new site, AI assistant, or data platform will move the
-                  needle most.
+                  A short call to look at your current setup and explore whether a
+                  new site, AI assistant, data platform, or brand/publicity push
+                  will move the needle most.
                 </motion.p>
               </div>
               <motion.a

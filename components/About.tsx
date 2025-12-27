@@ -16,13 +16,13 @@ const principles = [
     num: '02',
     title: 'Web, data, and AI together',
     description:
-      'Sites, dashboards, and assistants are designed as one system—so the experience feels seamless for both customers and teams.',
+      'Sites, dashboards, assistants, and brand touchpoints are designed as one system—so the experience feels seamless for both customers and teams.',
   },
   {
     num: '03',
     title: 'Beauty that performs',
     description:
-      'Interfaces should look premium and still load fast, be accessible, and move the metrics that matter.',
+      'Interfaces and identities should look premium and still load fast, be accessible, and move the metrics that matter.',
   },
   {
     num: '04',
@@ -153,21 +153,21 @@ export function About() {
             >
               <div className="space-y-6 md:space-y-8 mb-12">
                 <p className="text-lg md:text-xl leading-[1.7] text-neutral-600">
-                  The studio designs and builds web experiences, data
-                  dashboards, and AI assistants that make your business{' '}
-                  <span className="text-black font-medium">easier to run</span>{' '}
-                  and{' '}
+                  The studio designs and builds web experiences, data dashboards,
+                  and AI assistants that make your business{' '}
+                  <span className="text-black font-medium">easier to run</span> and{' '}
                   <span className="text-black font-medium">easier to trust</span>.
                 </p>
                 <p className="text-base md:text-lg leading-[1.8] text-neutral-500">
-                  From marketing sites to internal tools, everything is treated
-                  as one connected system—interfaces, data flows, and
-                  automation—not a pile of disconnected features.
+                  Through a studio partnership with{' '}
+                  <span className="text-black font-medium">Maraschino Publicity</span>,
+                  brand and publicity can sit in the same system—strategy, identity,
+                  campaigns, and the digital layer all pulling in the same direction.
                 </p>
                 <p className="text-base md:text-lg leading-[1.8] text-neutral-500">
                   No trend‑chasing, no unnecessary layers. Just clear structure,
-                  deliberate decisions, and implementations that respect how you
-                  actually work today while creating room for what comes next.
+                  deliberate decisions, and implementations that respect how you work
+                  today while creating room for what comes next.
                 </p>
               </div>
 

@@ -1,4 +1,5 @@
 'use client'
+
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useState, useRef } from 'react'
@@ -11,9 +12,11 @@ const LeadSchema = z.object({
   email: z.string().email(),
   company: z.string().optional(),
   website: z.string().optional(),
-  budget: z.string(),
-  timeline: z.string(),
-  goals: z.string(),
+  projectType: z.string().min(1),
+  brandingPr: z.string().min(1),
+  budget: z.string().min(1),
+  timeline: z.string().min(1),
+  goals: z.string().min(1),
   issues: z.string().optional(),
   inspiration: z.string().optional(),
   confirmEmail: z.string().optional(),
@@ -21,10 +24,10 @@ const LeadSchema = z.object({
 type Lead = z.infer<typeof LeadSchema>
 
 const budgetRanges = [
-  { value: 'NZD 1.5k–4k', label: 'Starter', price: '1.5k–4k' },
-  { value: 'NZD 4k–10k', label: 'Growth', price: '4k–10k' },
-  { value: 'NZD 10k–25k+', label: 'Bespoke', price: '10k–25k+' },
-  { value: 'Not sure', label: 'Flexible', price: 'Not sure' },
+  { value: 'NZD 1.5k–4k', label: 'Starter Site', price: '1.5k–4k' },
+  { value: 'NZD 4k–10k', label: 'Growth Site', price: '4k–10k' },
+  { value: 'NZD 10k–25k+', label: 'Systems & AI', price: '10k–25k+' },
+  { value: 'NZD 18k–40k+', label: 'Brand, Site & Launch', price: '18k–40k+' },
 ]
 
 const timelineOptions = [
@@ -34,8 +37,49 @@ const timelineOptions = [
   { value: 'Flexible', label: 'Flexible', desc: 'No fixed deadline' },
 ]
 
+const projectTypeOptions = [
+  {
+    value: 'Website / marketing site',
+    label: 'Website / marketing site',
+    desc: 'New site or rebuild focused on marketing and conversion',
+  },
+  {
+    value: 'Systems & AI / internal tools',
+    label: 'Systems & AI / internal tools',
+    desc: 'Dashboards, assistants, or workflow tools on your data',
+  },
+  {
+    value: 'Brand, Site & Launch',
+    label: 'Brand, Site & Launch',
+    desc: 'Full brand, site, and launch with Maraschino Publicity',
+  },
+  {
+    value: 'Not sure yet',
+    label: 'Not sure yet',
+    desc: 'Need help working out the right shape',
+  },
+]
+
+const brandingPrOptions = [
+  {
+    value: 'Yes',
+    label: 'Yes',
+    desc: 'We want brand and/or publicity support as part of this',
+  },
+  {
+    value: 'No',
+    label: 'No',
+    desc: 'Digital only is fine for now',
+  },
+  {
+    value: 'Not sure',
+    label: 'Not sure',
+    desc: 'Open to it if it makes sense',
+  },
+]
+
 const steps = [
-  { id: 1, title: 'Project Scope', desc: 'Investment & timeline' },
+  { id: 1, title: 'Project Scope', desc: 'Type, investment, timeline' },
   { id: 2, title: 'Contact', desc: 'Your details' },
   { id: 3, title: 'Vision', desc: 'Project goals' },
 ]
@@ -43,10 +87,7 @@ const steps = [
 function GridPattern() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
-      <svg
-        className="absolute w-full h-full"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern
             id="grid"
@@ -87,6 +128,8 @@ export function Booking() {
 
   const selectedBudget = watch('budget')
   const selectedTimeline = watch('timeline')
+  const selectedProjectType = watch('projectType')
+  const selectedBrandingPr = watch('brandingPr')
 
   const onSubmit = async (data: Lead) => {
     setStatus('submitting')
@@ -120,7 +163,8 @@ export function Booking() {
 
   const nextStep = async () => {
     let fieldsToValidate: (keyof Lead)[] = []
-    if (currentStep === 1) fieldsToValidate = ['budget', 'timeline']
+    if (currentStep === 1)
+      fieldsToValidate = ['projectType', 'brandingPr', 'budget', 'timeline']
     if (currentStep === 2) fieldsToValidate = ['name', 'email']
     if (currentStep === 3) fieldsToValidate = ['goals']
 
@@ -170,11 +214,14 @@ export function Booking() {
           <h2 className="text-5xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-white mb-6">
             Tell me about your
             <br />
-            <span className="text-white/40">site, system, or assistant.</span>
+            <span className="text-white/40">
+              site, system, or launch.
+            </span>
           </h2>
           <p className="text-sm text-white/40 max-w-xl mx-auto">
-            Web, data, or AI—same form. A short brief is enough to work out if
-            it’s a good fit and where it sits in the pricing ranges.
+            Web, data, AI, and brand/publicity all run through the same brief. A
+            short outline is enough to work out if it’s a good fit and where it
+            sits in the pricing ranges.
           </p>
         </motion.div>
 
@@ -288,7 +335,7 @@ export function Booking() {
                 />
 
                 <AnimatePresence mode="wait" custom={currentStep}>
-                  {/* Step 1: Budget & Timeline */}
+                  {/* Step 1: Project type, branding/PR, budget, timeline */}
                   {currentStep === 1 && (
                     <motion.div
                       key="step1"
@@ -303,6 +350,140 @@ export function Booking() {
                       }}
                       className="space-y-14"
                     >
+                      {/* Project type */}
+                      <div>
+                        <label className="block text-sm text-white/50 mb-6 tracking-wide">
+                          What kind of project is this?
+                        </label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {projectTypeOptions.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() =>
+                                setValue('projectType', opt.value, {
+                                  shouldValidate: true,
+                                })
+                              }
+                              className={`
+                                group relative p-6 rounded-2xl border text-left transition-all duration-500
+                                ${
+                                  selectedProjectType === opt.value
+                                    ? 'bg-white border-white'
+                                    : 'bg-transparent border-white/10 hover:border-white/30'
+                                }
+                              `}
+                            >
+                              <span
+                                className={`block text-base font-medium mb-1 transition-colors duration-300 ${
+                                  selectedProjectType === opt.value
+                                    ? 'text-black'
+                                    : 'text-white'
+                                }`}
+                              >
+                                {opt.label}
+                              </span>
+                              <span
+                                className={`block text-xs transition-colors duration-300 ${
+                                  selectedProjectType === opt.value
+                                    ? 'text-black/60'
+                                    : 'text-white/40'
+                                }`}
+                              >
+                                {opt.desc}
+                              </span>
+                              {selectedProjectType === opt.value && (
+                                <motion.div
+                                  layoutId="projectType-check"
+                                  className="absolute top-4 right-4 w-5 h-5 rounded-full bg-black flex items-center justify-center"
+                                >
+                                  <Check
+                                    size={12}
+                                    className="text-white"
+                                  />
+                                </motion.div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                        <input
+                          type="hidden"
+                          {...register('projectType', { required: true })}
+                        />
+                        {errors.projectType && (
+                          <p className="text-white/60 text-sm mt-4">
+                            Please choose a project type
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Branding & PR */}
+                      <div>
+                        <label className="block text-sm text-white/50 mb-6 tracking-wide">
+                          Do you want branding & publicity involved?
+                        </label>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {brandingPrOptions.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() =>
+                                setValue('brandingPr', opt.value, {
+                                  shouldValidate: true,
+                                })
+                              }
+                              className={`
+                                group relative p-6 rounded-2xl border text-left transition-all duration-500
+                                ${
+                                  selectedBrandingPr === opt.value
+                                    ? 'bg-white border-white'
+                                    : 'bg-transparent border-white/10 hover:border-white/30'
+                                }
+                              `}
+                            >
+                              <span
+                                className={`block text-base font-medium mb-1 transition-colors duration-300 ${
+                                  selectedBrandingPr === opt.value
+                                    ? 'text-black'
+                                    : 'text-white'
+                                }`}
+                              >
+                                {opt.label}
+                              </span>
+                              <span
+                                className={`block text-xs transition-colors duration-300 ${
+                                  selectedBrandingPr === opt.value
+                                    ? 'text-black/60'
+                                    : 'text-white/40'
+                                }`}
+                              >
+                                {opt.desc}
+                              </span>
+                              {selectedBrandingPr === opt.value && (
+                                <motion.div
+                                  layoutId="brandingPr-check"
+                                  className="absolute top-4 right-4 w-5 h-5 rounded-full bg-black flex items-center justify-center"
+                                >
+                                  <Check
+                                    size={12}
+                                    className="text-white"
+                                  />
+                                </motion.div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                        <input
+                          type="hidden"
+                          {...register('brandingPr', { required: true })}
+                        />
+                        {errors.brandingPr && (
+                          <p className="text-white/60 text-sm mt-4">
+                            Please let me know if branding & publicity is in or out
+                          </p>
+                        )}
+                      </div>
+
                       {/* Budget */}
                       <div>
                         <label className="block text-sm text-white/50 mb-6 tracking-wide">
@@ -560,7 +741,7 @@ export function Booking() {
                           What are you looking to build?
                         </label>
                         <textarea
-                          placeholder="For example: a new marketing site, an internal dashboard on existing data, or an AI assistant for your team..."
+                          placeholder="For example: a new marketing site, an internal dashboard on existing data, an AI assistant for your team, or a full brand + launch package..."
                           {...register('goals', { required: true })}
                           rows={5}
                           className={`
@@ -588,7 +769,7 @@ export function Booking() {
                           <span className="text-white/20">— optional</span>
                         </label>
                         <textarea
-                          placeholder="What’s not working with your current site, tools, or reporting?"
+                          placeholder="What’s not working with your current site, tools, reporting, or brand presence?"
                           {...register('issues')}
                           rows={3}
                           className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-white/10 text-lg font-light resize-none placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-all duration-300"
@@ -602,7 +783,7 @@ export function Booking() {
                           <span className="text-white/20">— optional</span>
                         </label>
                         <textarea
-                          placeholder="Links to sites, dashboards, or products you admire..."
+                          placeholder="Links to sites, dashboards, products, or launches you admire..."
                           {...register('inspiration')}
                           rows={2}
                           className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-white/10 text-lg font-light resize-none placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-all duration-300"
@@ -662,9 +843,7 @@ export function Booking() {
                       data-testid="booking-submit"
                     >
                       <span className="relative z-10">
-                        {status === 'submitting'
-                          ? 'Sending...'
-                          : 'Submit brief'}
+                        {status === 'submitting' ? 'Sending...' : 'Submit brief'}
                       </span>
                       {status !== 'submitting' && (
                         <ArrowRight

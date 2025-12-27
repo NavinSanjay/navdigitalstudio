@@ -1,15 +1,19 @@
 [
   {
     "q": "What kind of projects do you take on?",
-    "a": "The studio focuses on three main types of work: custom marketing sites, internal tools and dashboards, and AI-powered assistants that sit on top of your existing data and docs. Everything is designed as one connected system rather than separate, one-off pieces."
+    "a": "The studio focuses on three main types of work: custom marketing sites, internal tools and dashboards, and AI-powered assistants that sit on top of your existing data and docs. Branding and publicity support are available through a studio partnership with Maraschino Publicity when a project needs them."
   },
   {
     "q": "Do you only build websites, or also AI and data systems?",
-    "a": "Web is one pillar, but not the only one. Projects often combine a marketing site or product UI with data reporting, automation, or an internal chatbot. Pure AI/data work is also possible if there’s already a clear interface or workflow in place."
+    "a": "Web is one pillar, but not the only one. Projects often combine a marketing site or product UI with data reporting, automation, or an internal chatbot. Pure AI/data work is also possible if there is already a clear interface or workflow in place."
+  },
+  {
+    "q": "Do you handle branding and publicity?",
+    "a": "Core services focus on digital systems—web, data, and AI. For brand identity, campaigns, and publicity, NAV works in partnership with Maraschino Publicity so that positioning, creative, and PR are aligned with the product and platform being built."
   },
   {
     "q": "What does a typical budget look like?",
-    "a": "Most web projects fall between the Starter and Growth ranges shown above, while AI and data pilots (for example, an internal assistant or a focused dashboard) tend to sit in the Bespoke range. If you are not sure where your project lands, use the booking form and we can calibrate together."
+    "a": "Most web projects fall between the Starter and Growth ranges shown above, while AI and data pilots—such as an internal assistant or a focused dashboard—tend to sit in the Bespoke range. When branding or publicity is involved, those costs are scoped separately with clear line items from the outset."
   },
   {
     "q": "Can we start small with a pilot?",
@@ -25,14 +29,14 @@
   },
   {
     "q": "What does collaboration look like?",
-    "a": "Most projects involve a short discovery, a clear written proposal, and then a build phase with regular check-ins. You will see key decisions as they are made, rather than being handed a black box at the end."
+    "a": "Most projects involve a short discovery, a clear written proposal, and then a build phase with regular check-ins. When Maraschino Publicity is involved, you still have a single point of contact, with a shared plan and joint reviews at key milestones."
   },
   {
     "q": "Do you offer ongoing support?",
-    "a": "Yes. Some clients prefer a clean handover with clear documentation, while others choose a light ongoing arrangement for improvements, new features, or additional data and AI use cases. Both options are available and can be discussed after the initial build."
+    "a": "Yes. Some clients prefer a clean handover with clear documentation, while others choose a light ongoing arrangement for improvements, new features, or additional data and AI use cases. Ongoing support for branding and publicity can also be arranged through Maraschino Publicity once the initial work is complete."
   },
   {
     "q": "What if we only need a small site or update?",
-    "a": "Smaller, well-defined projects can still be a good fit as long as there is enough scope to add real value—such as tightening the structure, improving performance, or preparing the site to support future AI or data work."
+    "a": "Smaller, well-defined projects can still be a good fit as long as there is enough scope to add real value—such as tightening the structure, improving performance, or preparing the site to support future AI or data work. If all you need is pure PR or brand execution, you can also be introduced directly to Maraschino Publicity."
   }
 ]
