@@ -160,7 +160,7 @@ export function About() {
                 </p>
                 <p className="text-base md:text-lg leading-[1.8] text-neutral-500">
                   Through a studio partnership with{' '}
-                  <span className="text-black font-medium">Maraschino Publicity</span>,
+                  <a href="https://maraschino.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#812118] font-bold hover:underline"> Maraschino Publicity</a>,
                   brand and publicity can sit in the same system—strategy, identity,
                   campaigns, and the digital layer all pulling in the same direction.
                 </p>

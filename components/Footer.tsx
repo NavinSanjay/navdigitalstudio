@@ -72,14 +72,6 @@ export function Footer() {
           <span className="text-sm text-neutral-500">
             © {currentYear} Nav Digital Studio. All rights reserved.
           </span>
-          <div className="flex items-center gap-6">
-            <a 
-              href="/admin-cms" 
-              className="text-sm text-neutral-600 hover:text-neutral-400 transition"
-            >
-              Admin
-            </a>
-          </div>
         </div>
       </div>
     </footer>

@@ -186,7 +186,7 @@ export function Services() {
               a pile of separate tools.
               <span className="block mt-4 text-neutral-500 text-base italic">
                 Branding and publicity are handled in partnership with
-                Maraschino Publicity, so the story you tell in public matches
+                <a href="https://maraschino.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#812118] font-bold hover:underline"> Maraschino Publicity</a>, so the story you tell in public matches
                 the systems that sit behind it.
               </span>
             </p>

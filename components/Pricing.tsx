@@ -79,7 +79,7 @@ const tiers = [
     description:
       'For mixed scopes or constraints that do not quite fit the tiers above. The work is shaped to your priorities and budget.',
     timeline: 'Varies by scope',
-    badge: 'Let’s calibrate',
+    badge: "Let's calibrate",
     popular: false,
     features: [
       'Suited to unusual timelines or hybrid projects',
@@ -91,7 +91,7 @@ const tiers = [
   },
 ]
 
-const CARD_WIDTH = 420 // must match w-[420px]
+const CARD_WIDTH = 420
 
 export function Pricing() {
   const [activeIndex, setActiveIndex] = useState(1)
@@ -116,17 +116,23 @@ export function Pricing() {
     setActiveIndex((prev) => (prev + 1) % tiers.length)
   }
 
-  // 3D layout for desktop – symmetric left/right
+  // 3D layout showing all cards evenly
   const getCardStyle = (index: number) => {
-    const diff = index - activeIndex
-    const normalizedDiff = ((diff + tiers.length + 1) % tiers.length) - 1 // -1, 0, 1
+    let diff = index - activeIndex
 
-    const rotateY = normalizedDiff * 30
-    const translateZ = normalizedDiff === 0 ? 0 : -120
-    const translateX = normalizedDiff * CARD_WIDTH // equal spacing
-    const scale = normalizedDiff === 0 ? 1 : 0.9
-    const opacity = normalizedDiff === 0 ? 1 : 0.4
-    const zIndex = normalizedDiff === 0 ? 10 : 5
+    // Normalize to shortest path around the ring
+    if (diff > tiers.length / 2) diff -= tiers.length
+    if (diff < -tiers.length / 2) diff += tiers.length
+
+    const isActive = diff === 0
+
+    // Position cards evenly in a ring
+    const rotateY = diff * 25 // degrees per step
+    const translateZ = isActive ? 0 : -100
+    const translateX = diff * 300 // horizontal spacing
+    const scale = isActive ? 1 : 0.85
+    const opacity = isActive ? 1 : Math.max(0.25, 0.6 - Math.abs(diff) * 0.15)
+    const zIndex = isActive ? 10 : 5 - Math.abs(diff)
 
     return { rotateY, translateZ, translateX, scale, opacity, zIndex }
   }
@@ -241,7 +247,7 @@ export function Pricing() {
           {/* Desktop: 3D carousel */}
           <div
             className="hidden md:flex relative h-[620px] items-center justify-center w-full"
-            style={{ perspective: '1200px', overflow: 'visible' }}
+            style={{ perspective: '1400px' }}
           >
             <div
               className="relative h-full"
@@ -254,11 +260,11 @@ export function Pricing() {
                 return (
                   <motion.div
                     key={tier.name}
-                    className="absolute top-0 left-1/2 w-[420px]"
+                    className="absolute top-0 left-1/2 w-[420px] cursor-pointer"
                     initial={false}
                     animate={{
                       rotateY: style.rotateY,
-                      x: style.translateX - CARD_WIDTH / 2, // centre active card
+                      x: style.translateX - CARD_WIDTH / 2,
                       z: style.translateZ,
                       scale: style.scale,
                       opacity: style.opacity,
