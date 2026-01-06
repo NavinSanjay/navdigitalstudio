@@ -14,6 +14,7 @@ const LeadSchema = z.object({
   website: z.string().optional(),
   projectType: z.string().min(1),
   brandingPr: z.string().min(1),
+  scopeTier: z.string().min(1),
   budget: z.string().min(1),
   timeline: z.string().min(1),
   goals: z.string().min(1),
@@ -23,11 +24,32 @@ const LeadSchema = z.object({
 })
 type Lead = z.infer<typeof LeadSchema>
 
-const budgetRanges = [
-  { value: 'NZD 1.5k–4k', label: 'Starter Site', price: '1.5k–4k' },
-  { value: 'NZD 4k–10k', label: 'Growth Site', price: '4k–10k' },
-  { value: 'NZD 10k–25k+', label: 'Systems & AI', price: '10k–25k+' },
-  { value: 'NZD 18k–40k+', label: 'Brand, Site & Launch', price: '18k–40k+' },
+const scopeTiers = [
+  {
+    value: 'Starter Site',
+    label: 'Starter Site',
+    desc: 'Single-focus marketing site',
+  },
+  {
+    value: 'Growth Site',
+    label: 'Growth Site',
+    desc: 'Multi-page site with integrations',
+  },
+  {
+    value: 'Systems & AI',
+    label: 'Systems & AI',
+    desc: 'Custom tools and AI workflows',
+  },
+  {
+    value: 'Brand, Site & Launch',
+    label: 'Brand, Site & Launch',
+    desc: 'End-to-end brand and launch package',
+  },
+  {
+    value: 'Custom Scope',
+    label: 'Custom Scope',
+    desc: 'Tailored to your constraints',
+  },
 ]
 
 const timelineOptions = [
@@ -79,7 +101,7 @@ const brandingPrOptions = [
 ]
 
 const steps = [
-  { id: 1, title: 'Project Scope', desc: 'Type, investment, timeline' },
+  { id: 1, title: 'Project Scope', desc: 'Type, tier, timeline' },
   { id: 2, title: 'Contact', desc: 'Your details' },
   { id: 3, title: 'Vision', desc: 'Project goals' },
 ]
@@ -126,7 +148,7 @@ export function Booking() {
   const [currentStep, setCurrentStep] = useState(1)
   const formRef = useRef<HTMLFormElement>(null)
 
-  const selectedBudget = watch('budget')
+  const selectedScopeTier = watch('scopeTier')
   const selectedTimeline = watch('timeline')
   const selectedProjectType = watch('projectType')
   const selectedBrandingPr = watch('brandingPr')
@@ -145,7 +167,7 @@ export function Booking() {
       if (res.ok) {
         setStatus('ok')
         setMessage(
-          "Thanks for the brief. You'll get a response within 24 hours with next steps and a rough fit check."
+          "Thanks for the brief. You'll get a response within 24 hours with next steps, a rough fit check, and indicative investment range."
         )
         reset()
         track('lead_form_success')
@@ -164,7 +186,7 @@ export function Booking() {
   const nextStep = async () => {
     let fieldsToValidate: (keyof Lead)[] = []
     if (currentStep === 1)
-      fieldsToValidate = ['projectType', 'brandingPr', 'budget', 'timeline']
+      fieldsToValidate = ['projectType', 'brandingPr', 'scopeTier', 'timeline']
     if (currentStep === 2) fieldsToValidate = ['name', 'email']
     if (currentStep === 3) fieldsToValidate = ['goals']
 
@@ -214,14 +236,12 @@ export function Booking() {
           <h2 className="text-5xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-white mb-6">
             Tell me about your
             <br />
-            <span className="text-white/40">
-              site, system, or launch.
-            </span>
+            <span className="text-white/40">site, system, or launch.</span>
           </h2>
           <p className="text-sm text-white/40 max-w-xl mx-auto">
-            Web, data, AI, and brand/publicity all run through the same brief. A
-            short outline is enough to work out if it’s a good fit and where it
-            sits in the pricing ranges.
+            A short outline is enough to work out if it's a good fit and where
+            it sits scope-wise. We'll discuss investment after understanding your
+            goals.
           </p>
         </motion.div>
 
@@ -335,7 +355,7 @@ export function Booking() {
                 />
 
                 <AnimatePresence mode="wait" custom={currentStep}>
-                  {/* Step 1: Project type, branding/PR, budget, timeline */}
+                  {/* Step 1: Project type, branding/PR, scope tier, budget, timeline */}
                   {currentStep === 1 && (
                     <motion.div
                       key="step1"
@@ -397,10 +417,7 @@ export function Booking() {
                                   layoutId="projectType-check"
                                   className="absolute top-4 right-4 w-5 h-5 rounded-full bg-black flex items-center justify-center"
                                 >
-                                  <Check
-                                    size={12}
-                                    className="text-white"
-                                  />
+                                  <Check size={12} className="text-white" />
                                 </motion.div>
                               )}
                             </button>
@@ -464,10 +481,7 @@ export function Booking() {
                                   layoutId="brandingPr-check"
                                   className="absolute top-4 right-4 w-5 h-5 rounded-full bg-black flex items-center justify-center"
                                 >
-                                  <Check
-                                    size={12}
-                                    className="text-white"
-                                  />
+                                  <Check size={12} className="text-white" />
                                 </motion.div>
                               )}
                             </button>
@@ -479,62 +493,60 @@ export function Booking() {
                         />
                         {errors.brandingPr && (
                           <p className="text-white/60 text-sm mt-4">
-                            Please let me know if branding & publicity is in or out
+                            Please let me know if branding & publicity is in or
+                            out
                           </p>
                         )}
                       </div>
 
-                      {/* Budget */}
+                      {/* Scope Tier */}
                       <div>
                         <label className="block text-sm text-white/50 mb-6 tracking-wide">
-                          Investment range
+                          Which tier best fits your scope?
                         </label>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          {budgetRanges.map((range) => (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {scopeTiers.map((tier) => (
                             <button
-                              key={range.value}
+                              key={tier.value}
                               type="button"
                               onClick={() =>
-                                setValue('budget', range.value, {
+                                setValue('scopeTier', tier.value, {
                                   shouldValidate: true,
                                 })
                               }
                               className={`
                                 group relative p-6 rounded-2xl border text-left transition-all duration-500
                                 ${
-                                  selectedBudget === range.value
+                                  selectedScopeTier === tier.value
                                     ? 'bg-white border-white'
                                     : 'bg-transparent border-white/10 hover:border-white/30'
                                 }
                               `}
                             >
                               <span
-                                className={`block text-2xl font-light mb-2 transition-colors duration-300 ${
-                                  selectedBudget === range.value
+                                className={`block text-base font-medium mb-2 transition-colors duration-300 ${
+                                  selectedScopeTier === tier.value
                                     ? 'text-black'
                                     : 'text-white'
                                 }`}
                               >
-                                {range.price}
+                                {tier.label}
                               </span>
                               <span
-                                className={`block text-xs tracking-wide uppercase transition-colors duration-300 ${
-                                  selectedBudget === range.value
+                                className={`block text-xs transition-colors duration-300 ${
+                                  selectedScopeTier === tier.value
                                     ? 'text-black/60'
                                     : 'text-white/40'
                                 }`}
                               >
-                                {range.label}
+                                {tier.desc}
                               </span>
-                              {selectedBudget === range.value && (
+                              {selectedScopeTier === tier.value && (
                                 <motion.div
-                                  layoutId="budget-check"
+                                  layoutId="scopeTier-check"
                                   className="absolute top-4 right-4 w-5 h-5 rounded-full bg-black flex items-center justify-center"
                                 >
-                                  <Check
-                                    size={12}
-                                    className="text-white"
-                                  />
+                                  <Check size={12} className="text-white" />
                                 </motion.div>
                               )}
                             </button>
@@ -542,13 +554,30 @@ export function Booking() {
                         </div>
                         <input
                           type="hidden"
-                          {...register('budget', { required: true })}
+                          {...register('scopeTier', { required: true })}
                         />
-                        {errors.budget && (
+                        {errors.scopeTier && (
                           <p className="text-white/60 text-sm mt-4">
-                            Please select an investment range
+                            Please select a scope tier
                           </p>
                         )}
+                      </div>
+
+                      {/* Budget Input */}
+                      <div>
+                        <label className="block text-sm text-white/50 mb-3 tracking-wide">
+                          Your budget{' '}
+                          <span className="text-white/20"></span>
+                        </label>
+                        <input
+                          placeholder="e.g. NZD 5k, $10k, or 'flexible'"
+                          {...register('budget')}
+                          className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-white/10 text-xl font-light placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-all duration-300"
+                        />
+                        <p className="text-white/30 text-xs mt-3">
+                          Share a rough figure if you have one in mind. This helps
+                          us calibrate fit and make sure we're on the same page.
+                        </p>
                       </div>
 
                       {/* Timeline */}
@@ -598,10 +627,7 @@ export function Booking() {
                                   layoutId="timeline-check"
                                   className="absolute top-4 right-4 w-5 h-5 rounded-full bg-black flex items-center justify-center"
                                 >
-                                  <Check
-                                    size={12}
-                                    className="text-white"
-                                  />
+                                  <Check size={12} className="text-white" />
                                 </motion.div>
                               )}
                             </button>
@@ -769,7 +795,7 @@ export function Booking() {
                           <span className="text-white/20">— optional</span>
                         </label>
                         <textarea
-                          placeholder="What’s not working with your current site, tools, reporting, or brand presence?"
+                          placeholder="What's not working with your current site, tools, reporting, or brand presence?"
                           {...register('issues')}
                           rows={3}
                           className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-white/10 text-lg font-light resize-none placeholder:text-white/20 focus:outline-none focus:border-white/50 transition-all duration-300"
@@ -867,7 +893,7 @@ export function Booking() {
                 <div className="flex flex-wrap justify-center gap-10 md:gap-16">
                   {[
                     { value: '24h', label: 'Response' },
-                    { value: '3–5', label: 'Recent web builds' },
+                    { value: 'No pressure', label: 'Conversation first' },
                     { value: '100%', label: 'Code & IP ownership' },
                   ].map((stat, i) => (
                     <div key={i} className="text-center">

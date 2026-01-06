@@ -9,9 +9,10 @@ const Schema = z.object({
   email: z.string().email(),
   company: z.string().optional(),
   website: z.string().optional(),
-  projectType: z.string().min(1),          // NEW
-  brandingPr: z.string().min(1),           // NEW: e.g. "Yes", "No", "Not sure"
-  budget: z.string().min(1),
+  projectType: z.string().min(1),
+  brandingPr: z.string().min(1),
+  scopeTier: z.string().min(1),           // NEW: replaces budget tier selection
+  budget: z.string().min(1),          // NEW: free-form budget input
   timeline: z.string().min(1),
   goals: z.string().min(1),
   issues: z.string().optional(),
@@ -51,6 +52,8 @@ export async function POST(req: NextRequest) {
       email: data.email,
       projectType: data.projectType,
       brandingPr: data.brandingPr,
+      scopeTier: data.scopeTier,
+      budget: data.budget,
     })
     return NextResponse.json({ ok: true })
   }
@@ -68,7 +71,8 @@ Website: ${data.website || ''}
 Project type: ${data.projectType}
 Branding & publicity: ${data.brandingPr}
 
-Budget: ${data.budget}
+Scope tier: ${data.scopeTier}
+Budget: ${data.budget || 'Not specified'}
 Timeline: ${data.timeline}
 
 Goals:
@@ -80,11 +84,11 @@ ${data.issues || ''}
 Inspiration:
 ${data.inspiration || ''}`
 
-  const userSubject = 'We’ve received your project brief'
+  const userSubject = "'We've received your project brief'"
   const userHtml = `
     <p>Hi ${data.name},</p>
-    <p>Thanks for sharing your project brief with <strong>Nav Digital Studio</strong> — it’s now safely in the queue.</p>
-    <p>We’ll review the details (including your project type and whether you’re interested in branding & publicity support) and get back to you within 1–2 business days with next steps and a proposed time to chat.</p>
+    <p>Thanks for sharing your project brief with <strong>Nav Digital Studio</strong> — it's now safely in the queue.</p>
+    <p>We'll review the details (including your scope tier, budget, and whether you're interested in branding & publicity support) and get back to you within 24 hours with next steps, a rough fit check, and indicative investment range.</p>
     <p>If you need to add anything in the meantime, just reply to this email and it will be included in the review.</p>
     <p>Talk soon,<br/>Navin<br/>Nav Digital Studio</p>
   `

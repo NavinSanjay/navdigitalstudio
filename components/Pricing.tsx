@@ -7,11 +7,12 @@ import { useState, useEffect } from 'react'
 const tiers = [
   {
     name: 'Starter Site',
-    range: 'NZD 1.5k–4k',
+    scope: 'Single-focus marketing site',
     description:
       'For focused marketing pages and small sites that need to look sharp, feel credible, and convert.',
     timeline: '1.5–3 weeks',
-    badge: 'Best for simple sites',
+    stage: 'Early-stage or side projects',
+    badge: 'Quick launch',
     popular: false,
     features: [
       'Single-page or small 2–3 page marketing site',
@@ -23,10 +24,11 @@ const tiers = [
   },
   {
     name: 'Growth Site',
-    range: 'NZD 4k–10k',
+    scope: 'Multi-page site with integrations',
     description:
       'For growing businesses that need a deeper site, integrations, and room to evolve into AI and data over time.',
     timeline: '3–5 weeks',
+    stage: 'Growing teams with revenue',
     badge: 'Most chosen',
     popular: true,
     features: [
@@ -41,10 +43,11 @@ const tiers = [
   },
   {
     name: 'Systems & AI',
-    range: 'NZD 10k–25k+',
+    scope: 'Custom tools and AI workflows',
     description:
       'For complex web + system work: internal tools, dashboards, and AI-powered workflows designed around your data.',
     timeline: '4–10+ weeks',
+    stage: 'Established teams with data or AI needs',
     badge: 'Best for AI & data pilots',
     popular: false,
     features: [
@@ -58,10 +61,11 @@ const tiers = [
   },
   {
     name: 'Brand, Site & Launch',
-    range: 'NZD 18k–40k+',
+    scope: 'End-to-end brand and launch package',
     description:
       'For new companies and rebrands that want the whole thing handled: brand, website, and launch publicity in one plan.',
     timeline: '6–12+ weeks',
+    stage: 'Pre-launch or rebranding companies',
     badge: 'With Maraschino Publicity',
     popular: false,
     features: [
@@ -75,10 +79,11 @@ const tiers = [
   },
   {
     name: 'Custom Scope',
-    range: 'Can work with any budget',
+    scope: 'Tailored to your constraints',
     description:
       'For mixed scopes or constraints that do not quite fit the tiers above. The work is shaped to your priorities and budget.',
     timeline: 'Varies by scope',
+    stage: 'Any stage with unique needs',
     badge: "Let's calibrate",
     popular: false,
     features: [
@@ -90,6 +95,7 @@ const tiers = [
     ],
   },
 ]
+
 
 const CARD_WIDTH = 420
 
@@ -171,8 +177,8 @@ export function Pricing() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl md:text-5xl font-bold tracking-tight text-white"
           >
-            Clear pricing.
-            <span className="text-neutral-500"> No surprises.</span>
+            Transparent process. 
+            <span className="text-neutral-500"> Tailored pricing.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -180,8 +186,7 @@ export function Pricing() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-4 text-neutral-400 max-w-xl mx-auto text-sm md:text-base"
           >
-            Web, data, AI, and brand/publicity work all use the same ladder so
-            you can see where a project roughly lands.
+              Web, data, AI, and brand/publicity work all use the same service ladder. We discuss budget after understanding your scope—no pressure, no surprises.
           </motion.p>
         </div>
 
@@ -201,7 +206,10 @@ export function Pricing() {
 
                     <div className="text-center mb-6">
                       <h3 className="text-lg font-medium mb-2">{tier.name}</h3>
-                      <div className="text-4xl font-bold">{tier.range}</div>
+                      <div className="text-4xl font-bold">{tier.scope}</div>
+                      <div className="text-xs text-neutral-500 mt-1">
+                        {tier.stage}
+                      </div>
                       <div className="text-sm mt-2 text-neutral-600">
                         Typically {tier.timeline}
                       </div>
@@ -324,7 +332,7 @@ export function Pricing() {
                               : 'text-neutral-500'
                           }`}
                         >
-                          {tier.range}
+                          {tier.scope}
                         </div>
                         <div
                           className={`text-sm mt-2 ${
@@ -482,8 +490,9 @@ export function Pricing() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="mt-12 text-center text-neutral-600 text-xs md:text-sm"
         >
-          All prices in NZD and indicative. Final quote depends on scope,
-          complexity, and integrations. A 50% deposit is required to begin.
+          Investment is discussed after we understand your scope and goals. Most
+          projects start with a quick 20-minute call to calibrate fit and confirm
+          rough budgets before any commitment.
         </motion.p>
       </div>
     </section>
